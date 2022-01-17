@@ -9,15 +9,21 @@
     </style>
 </head>
 <body>
-    <h3>discrete settings</h1>
-    <div style="padding:5px;">
-        <p>samplerate</p>
-        <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;draw()"></input>
+    <div style="display:inline-block;">
+        <h3>discrete settings</h1>
+        <div style="padding:5px;">
+            <p>samplerate</p>
+            <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>frequency</p>
+            <input id="frequency" oninput="setFrequency(false);"></input>
+            <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
+        </div>
     </div>
-    <div style="padding:5px;">
-        <p>frequency</p>
-        <input id="frequency" oninput="setFrequency(false);"></input>
-        <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
+    <div style="display:inline-block;">
+        <p>butterworth filter order</p>
+        <input id="butterworthOrder" type="range" min=1 max=4 oninput="setButterworth(document.getElementById('butterworthOrder').value);">
     </div>
     <hr>
     

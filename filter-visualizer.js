@@ -216,6 +216,29 @@ function setFrequency(fromSlider)
     draw();
 }
 
+function setButterworth(order)
+{
+    for(var i = 0; i < 4; i++)
+    {
+        document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
+        document.getElementById("sz-y" + (i+1) ).value = order > i ? 99999999 : null;
+    }
+    for(var i = 1; i < 5; i++)
+    {
+        document.getElementById("sp-x" + i ).value = null;
+        document.getElementById("sp-y" + i ).value = null;
+    }
+
+    for(var i = 1; i <= order; i++)
+    {
+        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * order );
+        document.getElementById("sp-x" + i ).value = parseFloat(- Math.sin(theta)).toFixed(6);
+        document.getElementById("sp-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
+    }
+
+    draw();
+}
+
 ///////////////////////// DEBUGGING
 
 function consoleClear()
@@ -237,8 +260,8 @@ setFrequency(false);
 
 document.getElementById("sp-x1").value = -1;
 document.getElementById("sp-y1").value = 0;
-document.getElementById("sz-x1").value = -99999999999;
-document.getElementById("sz-y1").value = 0;
+document.getElementById("sz-x1").value = 0;
+document.getElementById("sz-y1").value = 9999999;
 
 ///////////////////////// START APPLICATION
 
