@@ -1,0 +1,53 @@
+<head>
+    <script src="complex/complex.js"></script>
+    <script src="dsp.js"></script>
+    <script src="position.js"></script>
+    <style>
+        p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h3>discrete settings</h1>
+    <div style="padding:5px;">
+        <p>samplerate</p>
+        <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawS()"></input>
+    </div>
+    <div style="padding:5px;">
+        <p>frequency</p>
+        <input id="frequency" oninput="setFrequency(false);"></input>
+        <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
+    </div>
+    <hr>
+    
+    <h3>analog poles (and soon zeros)</h3>
+    <div style="padding:5px;">
+        <p>pole 1</p>
+        <input id="s-x1" oninput="drawS()"></input>
+        <input id="s-y1" oninput="drawS()"></input>
+    </div>
+    <div style="padding:5px;">
+        <p>pole 2</p>
+        <input id="s-x2" oninput="drawS()"></input>
+        <input id="s-y2" oninput="drawS()"></input>
+    </div>
+    <div style="padding:5px;">
+        <p>pole 3</p>
+        <input id="s-x3" oninput="drawS()"></input>
+        <input id="s-y3" oninput="drawS()"></input>
+    </div>
+    <div style="padding:5px;">
+        <p>pole 4</p>
+        <input id="s-x4" oninput="drawS()"></input>
+        <input id="s-y4" oninput="drawS()"></input>
+    </div>
+    <hr>
+    <canvas id="sPlane" width=1000 height=1000></canvas>    
+    <canvas id="zPlane" width=1000 height=1000></canvas>
+    <canvas id="response" width=1000 height=1000></canvas>
+    <hr>
+    <p id="console"></p>  
+    
+    <script src="filter-visualizer.js"></script>
+</body>
