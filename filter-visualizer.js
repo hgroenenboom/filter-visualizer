@@ -23,27 +23,51 @@ function drawFilterResponse(polePositions, zeroPositions)
     ctx.fillStyle = "#000000";
     ctx.strokeRect(0, 0, width, height);
 
-    ctx.beginPath();
     transferFunction = createTransferFunction(polePositions, zeroPositions);
+    
+    // normalization should be obtained in a different way, as this is only valid for lowpass filters
     const normalization = 1.0 / transferFunction(Complex(1)).abs();
     
+    ctx.beginPath();
+    response.yMin = 0;
+    response.ySize = 2;
     for(var i = 0; i < response.xSize; i++)
     {
         const w = Complex({ arg: i / response.xSize * Math.PI, abs: 1.0 });
         const mag = normalization * transferFunction(w).abs();
         
-        const pos = new Position(response, i, mag);
+        const magPos = new Position(response, i, mag);
         if(i === 0)
         {
-            ctx.moveTo(0, pos.y);
+            ctx.moveTo(0, magPos.y);
         }
         else
         {
-            ctx.lineTo(pos.x, pos.y)
+            ctx.lineTo(magPos.x, magPos.y)
         }
     }
+    ctx.strokeStyle = "#0000FF";
+    ctx.stroke();
+    
+    ctx.beginPath();
+    response.yMin = -Math.PI;
+    response.ySize = 2 * Math.PI;
+    for(var i = 0; i < response.xSize; i++)
+    {
+        const w = Complex({ arg: i / response.xSize * Math.PI, abs: 1.0 });
+        const arg = transferFunction(w).arg() % Math.PI;
 
-    ctx.strokeStyle = "#00FF00";
+        const phasePos = new Position(response, i, arg);
+        if(i === 0)
+        {
+            ctx.moveTo(0, phasePos.y);
+        }
+        else
+        {
+            ctx.lineTo(phasePos.x, phasePos.y)
+        }
+    }
+    ctx.strokeStyle = "#FF0000";
     ctx.stroke();
 }
 
