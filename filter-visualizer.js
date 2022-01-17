@@ -120,7 +120,6 @@ function draw()
             analogPoles.push(new Position(sPlane, inputSX, inputSY));
         }
     }
-
     drawLaplaceCanvas(analogPoles);
 
     let digitalPoles = [];
