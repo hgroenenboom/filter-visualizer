@@ -1,3 +1,5 @@
+const maxOrder = 8;
+
 const width = 500;
 const height = width;
 
@@ -26,7 +28,10 @@ function drawFilterResponse(polePositions, zeroPositions)
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
     // normalization should be obtained in a different way, as this is only valid for lowpass filters
-    const normalization = 1.0 / transferFunction(Complex(1)).abs();
+    const nyquist = transferFunction(Complex(-1)).abs();
+    const dc = transferFunction(Complex(1)).abs();
+
+    const normalization = 1.0 / Math.max(nyquist, dc);
     
     ctx.beginPath();
     response.yMin = 0;
@@ -145,7 +150,7 @@ function draw()
     
     let analogPoles = [];
     let analogZeros = [];
-    for(let i = 1; i < 5; i++)
+    for(let i = 1; i < maxOrder + 1; i++)
     {
         const inputSPX = document.getElementById("sp-x" + String(i)).value;
         const inputSPY = document.getElementById("sp-y" + String(i)).value;
@@ -216,14 +221,17 @@ function setFrequency(fromSlider)
     draw();
 }
 
-function setButterworth(order)
+function setButterworth()
 {
-    for(var i = 0; i < 4; i++)
+    const type = document.getElementById('butterworthType').value;
+    const order = document.getElementById('butterworthOrder').value;
+
+    for(var i = 0; i < maxOrder; i++)
     {
         document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = order > i ? 99999999 : null;
+        document.getElementById("sz-y" + (i+1) ).value = order > i ? ( type == 0 ? 9999999 : 0 ) : null;
     }
-    for(var i = 1; i < 5; i++)
+    for(var i = 1; i < maxOrder + 1; i++)
     {
         document.getElementById("sp-x" + i ).value = null;
         document.getElementById("sp-y" + i ).value = null;
