@@ -71,7 +71,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     ctx.stroke();
 }
 
-function drawZPlaneCanvas(polePositions)
+function drawZPlaneCanvas(polePositions, zeroPositions)
 {
     var zPlane = document.getElementById("zPlane");
     var sPlane = document.getElementById("sPlane");
@@ -100,9 +100,15 @@ function drawZPlaneCanvas(polePositions)
     {
         ctx.fillRect(polePositions[i].x - 5, polePositions[i].y - 5, 10, 10);
     }
+    for(var i = 0; i < zeroPositions.length; i++)
+    {
+        ctx.beginPath();
+        ctx.arc(zeroPositions[i].x, zeroPositions[i].y, 5, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
 }
 
-function drawLaplaceCanvas(polePositions)
+function drawLaplaceCanvas(polePositions, zeroPositions)
 {
     var sPlane = document.getElementById("sPlane");
     sPlane.width = width;
@@ -121,11 +127,15 @@ function drawLaplaceCanvas(polePositions)
     ctx.strokeRect(0.5 * width, 0, 0.5 * width, height);
     ctx.strokeRect(0, 0.5 * width, height, 0.5 * width);
 
-    consoleWrite(frequency);
-
     for(var i = 0; i < polePositions.length; i++)
     {
         ctx.fillRect(polePositions[i].x - 5, polePositions[i].y - 5, 10, 10);
+    }
+    for(var i = 0; i < zeroPositions.length; i++)
+    {
+        ctx.beginPath();
+        ctx.arc(zeroPositions[i].x, zeroPositions[i].y, 5, 0, 2 * Math.PI);
+        ctx.stroke();
     }
 }
 
@@ -134,39 +144,55 @@ function draw()
     consoleClear();
     
     let analogPoles = [];
+    let analogZeros = [];
     for(let i = 1; i < 5; i++)
     {
-        const inputSX = document.getElementById("s-x" + String(i)).value;
-        const inputSY = document.getElementById("s-y" + String(i)).value;
+        const inputSPX = document.getElementById("sp-x" + String(i)).value;
+        const inputSPY = document.getElementById("sp-y" + String(i)).value;
+        const inputSZX = document.getElementById("sz-x" + String(i)).value;
+        const inputSZY = document.getElementById("sz-y" + String(i)).value;
         
-        if(inputSX && inputSY)
+        if(inputSPX && inputSPY)
         {
-            analogPoles.push(new Position(sPlane, inputSX, inputSY));
+            analogPoles.push(new Position(sPlane, inputSPX, inputSPY));
+        }
+        if(inputSZX && inputSZY)
+        {
+            analogZeros.push(new Position(sPlane, inputSZX, inputSZY));
         }
     }
-    drawLaplaceCanvas(analogPoles);
+    drawLaplaceCanvas(analogPoles, analogZeros);
 
     let digitalPoles = [];
+    let digitalZeros = [];
     consoleWrite("prewarped frequency: " + preWarp(frequency));
     for(var i = 0; i < analogPoles.length; i++)
     {
         analogPole = new Complex(analogPoles[i].valueX, analogPoles[i].valueY);
-        analogScaledPole = scaleAnalagPole(analogPole, frequency);
+        analogScaledPole = scaleAnalagVariable(analogPole, frequency);
         digitalPole = toDigital(analogScaledPole);
         digitalPoles.push(new Position(zPlane, digitalPole.re, digitalPole.im));
-        
+
         consoleWrite("analog pole: " + analogPole.re + ", " + analogPole.im);
         consoleWrite("scaled analog pole: " + analogScaledPole.re + ", " + analogScaledPole.im);
         consoleWrite("digital pole: " + digitalPole.re + ", " + digitalPole.im);
         consoleWrite("digital pole mag/pha: " + digitalPole.abs() + ", " + digitalPole.arg());
     }
-    drawZPlaneCanvas(digitalPoles);
-
-    let digitalZeros = [];
-    for(var i = 0; i < digitalPoles.length; i++)
+    
+    for(var i = 0; i < analogZeros.length; i++)
     {
-        digitalZeros.push(new Position(zPlane, -1, 0));
+        analogZero = new Complex(analogZeros[i].valueX, analogZeros[i].valueY);
+        analogScaledZero  = scaleAnalagVariable(analogZero, frequency);
+        digitalZero = toDigital(analogScaledZero);
+        digitalZeros.push(new Position(zPlane, digitalZero.re, digitalZero.im));
+        
+        consoleWrite("analog zero: " + analogZero.re + ", " + analogZero.im);
+        consoleWrite("scaled analog zero: " + analogScaledZero.re + ", " + analogScaledZero.im);
+        consoleWrite("digital zero: " + digitalZero.re + ", " + digitalZero.im);
+        consoleWrite("digital zero mag/pha: " + digitalZero.abs() + ", " + digitalZero.arg());
     }
+    drawZPlaneCanvas(digitalPoles, digitalZeros);
+
     drawFilterResponse(digitalPoles, digitalZeros);
 }
 
@@ -209,8 +235,10 @@ document.getElementById("samplerate").value = sampleRate;
 document.getElementById("frequency").value = frequency;
 setFrequency(false);
 
-document.getElementById("s-x1").value = -1;
-document.getElementById("s-y1").value = 0;
+document.getElementById("sp-x1").value = -1;
+document.getElementById("sp-y1").value = 0;
+document.getElementById("sz-x1").value = -99999999999;
+document.getElementById("sz-y1").value = 0;
 
 ///////////////////////// START APPLICATION
 

@@ -21,32 +21,58 @@
     </div>
     <hr>
     
-    <h3>analog poles (and soon zeros)</h3>
-    <div style="padding:5px;">
-        <p>pole 1</p>
-        <input id="s-x1" oninput="drawS()"></input>
-        <input id="s-y1" oninput="drawS()"></input>
+    <h3>analog poles</h3>
+    <div style="display:inline-block;">
+        <div style="padding:5px;">
+            <p>pole 1</p>
+            <input id="sp-x1" oninput="draw()"></input>
+            <input id="sp-y1" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>pole 2</p>
+            <input id="sp-x2" oninput="draw()"></input>
+            <input id="sp-y2" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>pole 3</p>
+            <input id="sp-x3" oninput="draw()"></input>
+            <input id="sp-y3" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>pole 4</p>
+            <input id="sp-x4" oninput="draw()"></input>
+            <input id="sp-y4" oninput="draw()"></input>
+        </div>
     </div>
-    <div style="padding:5px;">
-        <p>pole 2</p>
-        <input id="s-x2" oninput="drawS()"></input>
-        <input id="s-y2" oninput="drawS()"></input>
-    </div>
-    <div style="padding:5px;">
-        <p>pole 3</p>
-        <input id="s-x3" oninput="drawS()"></input>
-        <input id="s-y3" oninput="drawS()"></input>
-    </div>
-    <div style="padding:5px;">
-        <p>pole 4</p>
-        <input id="s-x4" oninput="drawS()"></input>
-        <input id="s-y4" oninput="drawS()"></input>
+    <div style="display:inline-block;">
+        <div style="padding:5px;">
+            <p>zero 1</p>
+            <input id="sz-x1" oninput="draw()"></input>
+            <input id="sz-y1" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>zero 2</p>
+            <input id="sz-x2" oninput="draw()"></input>
+            <input id="sz-y2" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>zero 3</p>
+            <input id="sz-x3" oninput="draw()"></input>
+            <input id="sz-y3" oninput="draw()"></input>
+        </div>
+        <div style="padding:5px;">
+            <p>zero 4</p>
+            <input id="sz-x4" oninput="draw()"></input>
+            <input id="sz-y4" oninput="draw()"></input>
+        </div>
     </div>
     <hr>
+    
     <canvas id="sPlane" width=1000 height=1000></canvas>    
     <canvas id="zPlane" width=1000 height=1000></canvas>
     <canvas id="response" width=1000 height=1000></canvas>
     <hr>
+
     <p id="console"></p>  
     
     <script src="filter-visualizer.js"></script>

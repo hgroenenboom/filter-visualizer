@@ -4,18 +4,18 @@ function preWarp(frequency)
     return (sampleRate / Math.PI) * Math.tan((Math.PI * frequency) / sampleRate);
 }
 
-/** Upscales an analog pole (1 rad/s) by a desired discrete frequency  */
-function scaleAnalagPole(analogPole, frequency)
+/** Upscales an analog pole/zero (1 rad/s) by a desired discrete frequency  */
+function scaleAnalagVariable(analog, frequency)
 {
-    return analogPole.mul( 2 * Math.PI * preWarp(frequency) );
+    return analog.mul( 2 * Math.PI * preWarp(frequency) );
 }
 
-/** Transforms an analog/continuous pole to a digital/discrete pole (no pre-warping) 
+/** Transforms an analog/continuous pole/zero to a digital/discrete pole/zero (no pre-warping) 
  *  Simply the billinear transform
 */
-function toDigital(analogPole)
+function toDigital(analog)
 {
-    return Complex(1, 0).add( analogPole.div(2 * sampleRate) ).div( Complex(1, 0).sub( analogPole.div(2 * sampleRate) ) );
+    return Complex(1, 0).add( analog.div(2 * sampleRate) ).div( Complex(1, 0).sub( analog.div(2 * sampleRate) ) );
 }
 
 /** Returns a TransferFunction function for a given set of poles and zeros (Position[]) */
