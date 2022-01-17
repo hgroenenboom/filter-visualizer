@@ -144,7 +144,31 @@ function drawLaplaceCanvas(polePositions, zeroPositions)
     }
 }
 
-function draw()
+function updateDigitalPoleZeros(digitalPoles, digitalZeros)
+{
+    for(var i = 0; i < digitalPoles.length; i++)
+    {
+        document.getElementById('zp-x' + (i + 1)).value = digitalPoles[i].valueX.toFixed(6);
+        document.getElementById('zp-y' + (i + 1)).value = digitalPoles[i].valueY.toFixed(6);
+    }
+    for(var i = digitalPoles.length; i < maxOrder; i++)
+    {
+        document.getElementById('zp-x' + (i + 1)).value = null;
+        document.getElementById('zp-y' + (i + 1)).value = null;
+    }
+    for(var i = 0; i < digitalZeros.length; i++)
+    {
+        document.getElementById('zz-x' + (i + 1)).value = digitalZeros[i].valueX.toFixed(6);
+        document.getElementById('zz-y' + (i + 1)).value = digitalZeros[i].valueY.toFixed(6);
+    }
+    for(var i = digitalZeros.length; i < maxOrder; i++)
+    {
+        document.getElementById('zz-x' + (i + 1)).value = null;
+        document.getElementById('zz-y' + (i + 1)).value = null;
+    }
+}
+
+function drawFromSplane()
 {
     consoleClear();
     
@@ -183,7 +207,7 @@ function draw()
         consoleWrite("digital pole: " + digitalPole.re + ", " + digitalPole.im);
         consoleWrite("digital pole mag/pha: " + digitalPole.abs() + ", " + digitalPole.arg());
     }
-    
+
     for(var i = 0; i < analogZeros.length; i++)
     {
         analogZero = new Complex(analogZeros[i].valueX, analogZeros[i].valueY);
@@ -196,6 +220,9 @@ function draw()
         consoleWrite("digital zero: " + digitalZero.re + ", " + digitalZero.im);
         consoleWrite("digital zero mag/pha: " + digitalZero.abs() + ", " + digitalZero.arg());
     }
+
+    updateDigitalPoleZeros(digitalPoles, digitalZeros);
+
     drawZPlaneCanvas(digitalPoles, digitalZeros);
 
     drawFilterResponse(digitalPoles, digitalZeros);
@@ -218,7 +245,7 @@ function setFrequency(fromSlider)
     }
 
     frequency = box.value;
-    draw();
+    drawFromSplane();
 }
 
 function setButterworth()
@@ -244,7 +271,7 @@ function setButterworth()
         document.getElementById("sp-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
     }
 
-    draw();
+    drawFromSplane();
 }
 
 ///////////////////////// DEBUGGING
@@ -273,4 +300,4 @@ document.getElementById("sz-y1").value = 9999999;
 
 ///////////////////////// START APPLICATION
 
-draw();
+drawFromSplane();
