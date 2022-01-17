@@ -5,6 +5,7 @@ const height = width;
 
 let sampleRate = 44100.0;
 let frequency = 11025.0;
+let type = 0;
 
 ///////////////////////// DRAWING FUNCTIONS
 
@@ -27,11 +28,20 @@ function drawFilterResponse(polePositions, zeroPositions)
 
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
-    // normalization should be obtained in a different way, as this is only valid for lowpass filters
-    const nyquist = transferFunction(Complex(-1)).abs();
-    const dc = transferFunction(Complex(1)).abs();
-
-    const normalization = 1.0 / Math.max(nyquist, dc);
+    let normalization = 1.0;
+    if(type == 0)
+    {
+        normalization = 1.0 / transferFunction(Complex(1)).abs();
+    }
+    else if(type == 1)
+    {
+        normalization = 1.0 / transferFunction(Complex(-1)).abs();
+    }
+    else if(type == 2)
+    {
+        const magnitudeAtFrequency = transferFunction(new Complex({ arg: (frequency / (0.5 * sampleRate) * Math.PI), abs: 1.0 })).abs();
+        normalization = 1.0 / magnitudeAtFrequency;
+    }
     
     ctx.beginPath();
     response.yMin = 0;
@@ -40,6 +50,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     {
         const w = Complex({ arg: i / response.xSize * Math.PI, abs: 1.0 });
         const mag = normalization * transferFunction(w).abs();
+        console.log(mag);
         
         const magPos = new Position(response, i, mag);
         if(i === 0)
@@ -250,13 +261,14 @@ function setFrequency(fromSlider)
 
 function setButterworth()
 {
-    const type = document.getElementById('butterworthType').value;
+    type = document.getElementById('butterworthType').value;
     const order = document.getElementById('butterworthOrder').value;
 
     for(var i = 0; i < maxOrder; i++)
     {
+        zeroType = (type == 2) ? i % 2 : type;
         document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = order > i ? ( type == 0 ? 9999999 : 0 ) : null;
+        document.getElementById("sz-y" + (i+1) ).value = order > i ? ( zeroType == 0 ? 9999999 : 0 ) : null;
     }
     for(var i = 1; i < maxOrder + 1; i++)
     {
