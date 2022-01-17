@@ -6,6 +6,14 @@
         p {
             margin: 0;
         }
+
+        h3 {
+            margin: 2;
+        }
+
+        h4 {
+            margin: 2;
+        }
     </style>
 </head>
 <body>
@@ -120,9 +128,18 @@
     </div>
     <hr>
     
-    <canvas id="sPlane" width=1000 height=1000></canvas>    
-    <canvas id="zPlane" width=1000 height=1000></canvas>
-    <canvas id="response" width=1000 height=1000></canvas>
+    <div style="display:inline-block;">
+        <h4>s-plane</h4>
+        <canvas id="sPlane" width=1000 height=1000></canvas>    
+    </div>
+    <div style="display:inline-block;">
+        <h4>z-plane</h4>
+        <canvas id="zPlane" width=1000 height=1000></canvas>
+    </div>
+    <div style="display:inline-block;">
+        <h4>filter response</h4>
+        <canvas id="response" width=1000 height=1000></canvas>
+    </div>
     <hr>
 
     <h3>digital poles</h3>
