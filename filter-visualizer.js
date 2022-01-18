@@ -19,7 +19,8 @@ let type = 0;
 function todos()
 {
     return "TODOs: <br>\
-    - improve filter normalization; currently only works when using the first view (global controls)<br>"; 
+    - improve filter normalization; currently only works when using the first view (global controls)<br>\
+    - prevent infinity errors by replacing it with high numbers <br>"; 
 }
 
 ///////////////////////// DRAWING FUNCTIONS
