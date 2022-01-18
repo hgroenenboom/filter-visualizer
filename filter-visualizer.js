@@ -42,9 +42,16 @@ function drawFilterResponse(polePositions, zeroPositions)
     ctx.strokeRect(0, zerodbPos.y, width, 0);
     ctx.strokeRect(0, min3dbPos.y, width, 0);
     ctx.strokeRect(0, min6dbPos.y, width, 0);
+    ctx.fillText("0db", 3, zerodbPos.y - 3, 30);
+    ctx.fillText("-3db", 3, min3dbPos.y - 3, 30);
+    ctx.fillText("-6db", 3, min6dbPos.y - 3, 30);
     const frequencyPos = new Position(response, response.xSize * frequency / (0.5 * sampleRate), 0);
-    ctx.strokeRect(frequencyPos.x, 0, 0, height);
-
+    ctx.strokeRect(frequencyPos.x, 1, 0, height);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(frequencyPos.x - 10, 1, 20, 16);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("\u03C9", frequencyPos.x - 4, 12, 8);
+    
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
     // TODO: find a better way to show the normalized frequency response
