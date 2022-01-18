@@ -1,3 +1,13 @@
+function ampToDb(amplitude)
+{
+    return Math.log10(amplitude) * 20.0;
+}
+
+function dbToAmp(db)
+{
+    return Math.pow(10.0, db / 20.0);
+}
+
 /** Prewarps the analog/continuous (splane) frequency to match the desired discrete frequency */
 function preWarp(frequency)
 {

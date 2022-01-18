@@ -34,6 +34,16 @@ function drawFilterResponse(polePositions, zeroPositions)
     ctx.strokeStyle = "#000000";
     ctx.fillStyle = "#000000";
     ctx.strokeRect(0, 0, width, height);
+    
+    ctx.strokeStyle = "#EEEEEE";
+    const zerodbPos = new Position(response, 0, dbToAmp(-0.0));
+    const min3dbPos = new Position(response, 0, dbToAmp(-3.0));
+    const min6dbPos = new Position(response, 0, dbToAmp(-6.0));
+    ctx.strokeRect(0, zerodbPos.y, width, 0);
+    ctx.strokeRect(0, min3dbPos.y, width, 0);
+    ctx.strokeRect(0, min6dbPos.y, width, 0);
+    const frequencyPos = new Position(response, response.xSize * frequency / (0.5 * sampleRate), 0);
+    ctx.strokeRect(frequencyPos.x, 0, 0, height);
 
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
@@ -93,7 +103,7 @@ function drawFilterResponse(polePositions, zeroPositions)
             ctx.lineTo(phasePos.x, phasePos.y)
         }
     }
-    ctx.strokeStyle = "#FF0000";
+    ctx.strokeStyle = "#FF9999";
     ctx.stroke();
 }
 
