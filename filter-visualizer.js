@@ -247,6 +247,8 @@ function drawFromSplane()
 {
     consoleClear();
     consoleWrite(todos());
+    consoleWrite("current frequency: " + frequency);
+    consoleWrite("prewarped frequency: " + preWarp(frequency));
     
     let analogPoles = [];
     let analogZeros = [];
@@ -268,8 +270,6 @@ function drawFromSplane()
     }
 
     drawLaplaceCanvas(analogPoles, analogZeros);
-
-    consoleWrite("prewarped frequency: " + preWarp(frequency));
 
     let digitalPoles = [];
     for(var i = 0; i < analogPoles.length; i++)
@@ -300,6 +300,8 @@ function drawFromZPlane()
 {
     consoleClear();
     consoleWrite(todos());
+    consoleWrite("current frequency: " + frequency);
+    consoleWrite("prewarped frequency: " + preWarp(frequency));
 
     let digitalPoles = [];
     let digitalZeros = [];
