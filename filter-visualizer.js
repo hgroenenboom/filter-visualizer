@@ -50,7 +50,6 @@ function drawFilterResponse(polePositions, zeroPositions)
     {
         const w = Complex({ arg: i / response.xSize * Math.PI, abs: 1.0 });
         const mag = normalization * transferFunction(w).abs();
-        console.log(mag);
         
         const magPos = new Position(response, i, mag);
         if(i === 0)
@@ -201,35 +200,27 @@ function drawFromSplane()
             analogZeros.push(new Position(sPlane, inputSZX, inputSZY));
         }
     }
+
     drawLaplaceCanvas(analogPoles, analogZeros);
 
-    let digitalPoles = [];
-    let digitalZeros = [];
     consoleWrite("prewarped frequency: " + preWarp(frequency));
+
+    let digitalPoles = [];
     for(var i = 0; i < analogPoles.length; i++)
     {
         analogPole = new Complex(analogPoles[i].valueX, analogPoles[i].valueY);
         analogScaledPole = scaleAnalagVariable(analogPole, frequency);
         digitalPole = toDigital(analogScaledPole);
         digitalPoles.push(new Position(zPlane, digitalPole.re, digitalPole.im));
-
-        consoleWrite("analog pole: " + analogPole.re + ", " + analogPole.im);
-        consoleWrite("scaled analog pole: " + analogScaledPole.re + ", " + analogScaledPole.im);
-        consoleWrite("digital pole: " + digitalPole.re + ", " + digitalPole.im);
-        consoleWrite("digital pole mag/pha: " + digitalPole.abs() + ", " + digitalPole.arg());
     }
-
+    
+    let digitalZeros = [];
     for(var i = 0; i < analogZeros.length; i++)
     {
         analogZero = new Complex(analogZeros[i].valueX, analogZeros[i].valueY);
         analogScaledZero  = scaleAnalagVariable(analogZero, frequency);
         digitalZero = toDigital(analogScaledZero);
         digitalZeros.push(new Position(zPlane, digitalZero.re, digitalZero.im));
-        
-        consoleWrite("analog zero: " + analogZero.re + ", " + analogZero.im);
-        consoleWrite("scaled analog zero: " + analogScaledZero.re + ", " + analogScaledZero.im);
-        consoleWrite("digital zero: " + digitalZero.re + ", " + digitalZero.im);
-        consoleWrite("digital zero mag/pha: " + digitalZero.abs() + ", " + digitalZero.arg());
     }
 
     updateDigitalPoleZeros(digitalPoles, digitalZeros);
@@ -237,6 +228,49 @@ function drawFromSplane()
     drawZPlaneCanvas(digitalPoles, digitalZeros);
 
     drawFilterResponse(digitalPoles, digitalZeros);
+}
+
+function drawFromZPlane()
+{
+    consoleClear();
+
+    let digitalPoles = [];
+    let digitalZeros = [];
+    for(let i = 1; i < maxOrder + 1; i++)
+    {
+        const inputZPX = document.getElementById("zp-x" + String(i)).value;
+        const inputZPY = document.getElementById("zp-y" + String(i)).value;
+        const inputZZX = document.getElementById("zz-x" + String(i)).value;
+        const inputZZY = document.getElementById("zz-y" + String(i)).value;
+        
+        if(inputZPX && inputZPY)
+        {
+            digitalPoles.push(new Position(zPlane, inputZPX, inputZPY));
+        }
+        if(inputZZX && inputZZY)
+        {
+            digitalZeros.push(new Position(zPlane, inputZZX, inputZZY));
+        }
+        console.log(inputZZX);
+    }
+    
+    drawZPlaneCanvas(digitalPoles, digitalZeros);
+
+    drawFilterResponse(digitalPoles, digitalZeros);
+
+    let analogPoles = [];
+    for(var i = 0; i < digitalPoles.length; i++)
+    {
+        digitalPole = new Complex(digitalPoles[i].valueX, digitalPoles[i].valueY);
+        // TODO: convert to analog poles
+    }
+    
+    let analogZeros = [];
+    for(var i = 0; i < digitalZeros.length; i++)
+    {
+        digitalZero = new Complex(digitalZeros[i].valueX, digitalZeros[i].valueY);
+        // TODO: convert to analog zeros
+    }
 }
 
 ///////////////////////// GUI CALLBACKS
