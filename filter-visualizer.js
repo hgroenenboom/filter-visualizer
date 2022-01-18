@@ -132,8 +132,10 @@ function drawZPlaneCanvas(polePositions, zeroPositions)
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(0, 0, width, height);
+    ctx.fillText("Im", 0.5 * width + 3, height - 3, 10);
     ctx.strokeRect(0.5 * width, 0, 0.5 * width, height);
-    ctx.strokeRect(0, 0.5 * width, height, 0.5 * width);
+    ctx.fillText("Re", 3, 0.5 * height + 12, 10);
+    ctx.strokeRect(0, 0.5 * height, width, 0.5 * height);
     
     ctx.beginPath();
     ctx.arc(0.5 * width, 0.5 * height, new Position(zPlane, zPlane.xMin + 1.0, 0.0).x, 0, 2 * Math.PI );
@@ -167,7 +169,9 @@ function drawLaplaceCanvas(polePositions, zeroPositions)
     ctx.fillStyle = "#000000";
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(0, 0, width, height);
+    ctx.fillText("Im", 0.5 * width + 3, height - 3, 10);
     ctx.strokeRect(0.5 * width, 0, 0.5 * width, height);
+    ctx.fillText("Re", 3, 0.5 * height + 12, 10);
     ctx.strokeRect(0, 0.5 * width, height, 0.5 * width);
 
     for(var i = 0; i < polePositions.length; i++)
