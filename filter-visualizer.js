@@ -396,6 +396,45 @@ function setButterworth()
     drawFromSplane();
 }
 
+function setChebyshev()
+{
+    // TODO: fix normalization
+    // TODO: fix highpass
+    // TODO: fix -3db centering
+
+    type = 0;
+    const order = document.getElementById('chebyshevOrder').value;
+
+    const rippleDb = Math.pow(document.getElementById('chebyshevRipples').value, 3.0);
+    consoleWrite("chebyshev ripples in dB: " + rippleDb);
+
+    const epsilon = Math.sqrt( Math.pow(10.0, rippleDb / 10.0) - 1.0 );
+
+    for(var i = 0; i < maxOrder; i++)
+    {
+        zeroType = type;
+        document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
+        document.getElementById("sz-y" + (i+1) ).value = order > i ? 9999999 : null;
+    }
+    for(var i = 1; i < maxOrder + 1; i++)
+    {
+        document.getElementById("sp-x" + i ).value = null;
+        document.getElementById("sp-y" + i ).value = null;
+    }
+
+    for(var i = 1; i <= order; i++)
+    {
+        const theta = (Math.PI / 2.0) * (2.0 * i - 1.0) / order;
+        const re = - Math.sinh( (1.0 / order) * Math.asinh( 1.0 / epsilon ) ) * Math.sin(theta);
+        const im = Math.cosh( (1.0 / order) * Math.asinh( 1.0 / epsilon ) ) * Math.cos(theta);
+
+        document.getElementById("sp-x" + i ).value = parseFloat(re).toFixed(6);
+        document.getElementById("sp-y" + i ).value = parseFloat(im).toFixed(6);
+    }
+
+    drawFromSplane();
+}
+
 ///////////////////////// DEBUGGING
 
 function consoleClear()
