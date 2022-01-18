@@ -18,7 +18,8 @@ let type = 0;
 
 function todos()
 {
-    return "TODOs: improve filter normalization";
+    return "TODOs: <br>\
+    - improve filter normalization; currently only works when using the first view (global controls)<br>";
 }
 
 ///////////////////////// DRAWING FUNCTIONS
@@ -215,6 +216,32 @@ function updateDigitalPoleZeros(digitalPoles, digitalZeros)
     }
 }
 
+function updateAnalogPoleZeros(analogPoles, analogZeros)
+{
+    console.log(analogPoles);
+
+    for(var i = 0; i < analogPoles.length; i++)
+    {
+        document.getElementById('sp-x' + (i + 1)).value = analogPoles[i].valueX.toFixed(6);
+        document.getElementById('sp-y' + (i + 1)).value = analogPoles[i].valueY.toFixed(6);
+    }
+    for(var i = analogPoles.length; i < maxOrder; i++)
+    {
+        document.getElementById('sp-x' + (i + 1)).value = null;
+        document.getElementById('sp-y' + (i + 1)).value = null;
+    }
+    for(var i = 0; i < analogZeros.length; i++)
+    {
+        document.getElementById('sz-x' + (i + 1)).value = analogZeros[i].valueX.toFixed(6);
+        document.getElementById('sz-y' + (i + 1)).value = analogZeros[i].valueY.toFixed(6);
+    }
+    for(var i = analogZeros.length; i < maxOrder; i++)
+    {
+        document.getElementById('sz-x' + (i + 1)).value = null;
+        document.getElementById('sz-y' + (i + 1)).value = null;
+    }
+}
+
 function drawFromSplane()
 {
     consoleClear();
@@ -300,15 +327,23 @@ function drawFromZPlane()
     for(var i = 0; i < digitalPoles.length; i++)
     {
         digitalPole = new Complex(digitalPoles[i].valueX, digitalPoles[i].valueY);
-        // TODO: convert to analog poles
+        analogPole = toAnalog(digitalPole);
+        downScaledAnalogPole = normalizeAnalogVariable(analogPole, frequency);
+        analogPoles.push( new Position(sPlane, downScaledAnalogPole.re, downScaledAnalogPole.im) );
     }
     
     let analogZeros = [];
     for(var i = 0; i < digitalZeros.length; i++)
     {
         digitalZero = new Complex(digitalZeros[i].valueX, digitalZeros[i].valueY);
-        // TODO: convert to analog zeros
+        analogZero = toAnalog(digitalZero);
+        downScaledAnalogZero = normalizeAnalogVariable(analogZero, frequency);
+        analogZeros.push( new Position(sPlane, downScaledAnalogZero.re, downScaledAnalogZero.im) );
     }
+
+    updateAnalogPoleZeros(analogPoles, analogZeros);
+
+    drawLaplaceCanvas(analogPoles, analogZeros);
 }
 
 ///////////////////////// GUI CALLBACKS
