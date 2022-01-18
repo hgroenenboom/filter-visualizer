@@ -8,45 +8,44 @@ function dbToAmp(db)
     return Math.pow(10.0, db / 20.0);
 }
 
-// TODO: rename all occurences of 'analog' and 'digital' to 'continuous' and 'discrete'
-
-/** Prewarps the analog/continuous (splane) frequency to match the desired discrete frequency */
+/** Prewarps the continuous (splane) frequency to match the desired discrete frequency */
 function preWarp(frequency)
 {
     return (sampleRate / Math.PI) * Math.tan((Math.PI * frequency) / sampleRate);
 }
 
-/** Inverts frequency prewarping, converts a prewarped frequency to the desired discrete frequency */
+/** Inverts frequency prewarping, converts a prewarped continuous frequency to the desired discrete frequency */
 function inversePrewarp(warpedFrequency)
 {
     return sampleRate * Math.atan(warpedFrequency / (sampleRate / Math.PI)) / Math.PI;
 }
 
-/** Upscales an analog pole/zero (1 rad/s) by a desired discrete frequency  */
-function scaleAnalagVariable(analog, frequency)
+/** Upscales a continuous point by a desired discrete frequency  */
+function scaleContinuousNumber(number, frequency)
 {
-    return analog.mul( 2 * Math.PI * preWarp(frequency) );
+    return number.mul( 2 * Math.PI * preWarp(frequency) );
 }
 
-function normalizeAnalogVariable(analog, frequency)
+/** Downscales a upscaled continuous point */
+function normalizeContinuousNumber(scaledNumber, scalingFrequency)
 {
-    return analog.div( 2 * Math.PI * preWarp(frequency) );
+    return scaledNumber.div( 2 * Math.PI * preWarp(scalingFrequency) );
 }
 
-/** Transforms an analog/continuous pole/zero to a digital/discrete pole/zero (no pre-warping) 
+/** Transforms an analog/continuous number to its digital/discrete counterpart (no pre-warping) 
  *  Simply the billinear transform
 */
-function toDigital(analog)
+function toDiscrete(continous)
 {
-    return Complex(1, 0).add( analog.div(2 * sampleRate) ).div( Complex(1, 0).sub( analog.div(2 * sampleRate) ) );
+    return Complex(1, 0).add( continous.div(2 * sampleRate) ).div( Complex(1, 0).sub( continous.div(2 * sampleRate) ) );
 }
 
-/**
+/** Transforms a digital/discrete number to its continuous/analog counterpart (no pre-warping correction)
  *  Inverse of the billinear transform
  */
-function toAnalog(digital)
+function toContinuous(discrete)
 {
-    return new Complex(2 * sampleRate, 0).mul( digital.sub(1, 0).div( digital.sub(-1, 0) ) );
+    return new Complex(2 * sampleRate, 0).mul( discrete.sub(1, 0).div( discrete.sub(-1, 0) ) );
 }
 
 /** Returns a TransferFunction function for a given set of poles and zeros (Position[]) */

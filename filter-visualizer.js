@@ -19,8 +19,7 @@ let type = 0;
 function todos()
 {
     return "TODOs: <br>\
-    - improve filter normalization; currently only works when using the first view (global controls)<br>\
-    - rename all mentions of 'analog' and 'digital'<br>";
+    - improve filter normalization; currently only works when using the first view (global controls)<br>"; 
 }
 
 ///////////////////////// DRAWING FUNCTIONS
@@ -193,50 +192,50 @@ function drawLaplaceCanvas(polePositions, zeroPositions)
     }
 }
 
-function updateDigitalPoleZeros(digitalPoles, digitalZeros)
+function updateDiscretePoleZeros(discretePoles, discreteZeros)
 {
-    for(var i = 0; i < digitalPoles.length; i++)
+    for(var i = 0; i < discretePoles.length; i++)
     {
-        document.getElementById('zp-x' + (i + 1)).value = digitalPoles[i].valueX.toFixed(6);
-        document.getElementById('zp-y' + (i + 1)).value = digitalPoles[i].valueY.toFixed(6);
+        document.getElementById('zp-x' + (i + 1)).value = discretePoles[i].valueX.toFixed(6);
+        document.getElementById('zp-y' + (i + 1)).value = discretePoles[i].valueY.toFixed(6);
     }
-    for(var i = digitalPoles.length; i < maxOrder; i++)
+    for(var i = discretePoles.length; i < maxOrder; i++)
     {
         document.getElementById('zp-x' + (i + 1)).value = null;
         document.getElementById('zp-y' + (i + 1)).value = null;
     }
-    for(var i = 0; i < digitalZeros.length; i++)
+    for(var i = 0; i < discreteZeros.length; i++)
     {
-        document.getElementById('zz-x' + (i + 1)).value = digitalZeros[i].valueX.toFixed(6);
-        document.getElementById('zz-y' + (i + 1)).value = digitalZeros[i].valueY.toFixed(6);
+        document.getElementById('zz-x' + (i + 1)).value = discreteZeros[i].valueX.toFixed(6);
+        document.getElementById('zz-y' + (i + 1)).value = discreteZeros[i].valueY.toFixed(6);
     }
-    for(var i = digitalZeros.length; i < maxOrder; i++)
+    for(var i = discreteZeros.length; i < maxOrder; i++)
     {
         document.getElementById('zz-x' + (i + 1)).value = null;
         document.getElementById('zz-y' + (i + 1)).value = null;
     }
 }
 
-function updateAnalogPoleZeros(analogPoles, analogZeros)
+function updateContinuousPoleZeros(continuousPoles, continuousZeros)
 {
-    console.log(analogPoles);
+    console.log(continuousPoles);
 
-    for(var i = 0; i < analogPoles.length; i++)
+    for(var i = 0; i < continuousPoles.length; i++)
     {
-        document.getElementById('sp-x' + (i + 1)).value = analogPoles[i].valueX.toFixed(6);
-        document.getElementById('sp-y' + (i + 1)).value = analogPoles[i].valueY.toFixed(6);
+        document.getElementById('sp-x' + (i + 1)).value = continuousPoles[i].valueX.toFixed(6);
+        document.getElementById('sp-y' + (i + 1)).value = continuousPoles[i].valueY.toFixed(6);
     }
-    for(var i = analogPoles.length; i < maxOrder; i++)
+    for(var i = continuousPoles.length; i < maxOrder; i++)
     {
         document.getElementById('sp-x' + (i + 1)).value = null;
         document.getElementById('sp-y' + (i + 1)).value = null;
     }
-    for(var i = 0; i < analogZeros.length; i++)
+    for(var i = 0; i < continuousZeros.length; i++)
     {
-        document.getElementById('sz-x' + (i + 1)).value = analogZeros[i].valueX.toFixed(6);
-        document.getElementById('sz-y' + (i + 1)).value = analogZeros[i].valueY.toFixed(6);
+        document.getElementById('sz-x' + (i + 1)).value = continuousZeros[i].valueX.toFixed(6);
+        document.getElementById('sz-y' + (i + 1)).value = continuousZeros[i].valueY.toFixed(6);
     }
-    for(var i = analogZeros.length; i < maxOrder; i++)
+    for(var i = continuousZeros.length; i < maxOrder; i++)
     {
         document.getElementById('sz-x' + (i + 1)).value = null;
         document.getElementById('sz-y' + (i + 1)).value = null;
@@ -250,8 +249,8 @@ function drawFromSplane()
     consoleWrite("current frequency: " + frequency);
     consoleWrite("prewarped frequency: " + preWarp(frequency));
     
-    let analogPoles = [];
-    let analogZeros = [];
+    let continuousPoles = [];
+    let continuousZeros = [];
     for(let i = 1; i < maxOrder + 1; i++)
     {
         const inputSPX = document.getElementById("sp-x" + String(i)).value;
@@ -261,39 +260,39 @@ function drawFromSplane()
         
         if(inputSPX && inputSPY)
         {
-            analogPoles.push(new Position(sPlane, inputSPX, inputSPY));
+            continuousPoles.push(new Position(sPlane, inputSPX, inputSPY));
         }
         if(inputSZX && inputSZY)
         {
-            analogZeros.push(new Position(sPlane, inputSZX, inputSZY));
+            continuousZeros.push(new Position(sPlane, inputSZX, inputSZY));
         }
     }
 
-    drawLaplaceCanvas(analogPoles, analogZeros);
+    drawLaplaceCanvas(continuousPoles, continuousZeros);
 
-    let digitalPoles = [];
-    for(var i = 0; i < analogPoles.length; i++)
+    let discretePoles = [];
+    for(var i = 0; i < continuousPoles.length; i++)
     {
-        analogPole = new Complex(analogPoles[i].valueX, analogPoles[i].valueY);
-        analogScaledPole = scaleAnalagVariable(analogPole, frequency);
-        digitalPole = toDigital(analogScaledPole);
-        digitalPoles.push(new Position(zPlane, digitalPole.re, digitalPole.im));
+        continuousPole = new Complex(continuousPoles[i].valueX, continuousPoles[i].valueY);
+        continuousScaledPole = scaleContinuousNumber(continuousPole, frequency);
+        discretePole = toDiscrete(continuousScaledPole);
+        discretePoles.push(new Position(zPlane, discretePole.re, discretePole.im));
     }
     
-    let digitalZeros = [];
-    for(var i = 0; i < analogZeros.length; i++)
+    let discreteZeros = [];
+    for(var i = 0; i < continuousZeros.length; i++)
     {
-        analogZero = new Complex(analogZeros[i].valueX, analogZeros[i].valueY);
-        analogScaledZero  = scaleAnalagVariable(analogZero, frequency);
-        digitalZero = toDigital(analogScaledZero);
-        digitalZeros.push(new Position(zPlane, digitalZero.re, digitalZero.im));
+        continuousZero = new Complex(continuousZeros[i].valueX, continuousZeros[i].valueY);
+        continuousScaledZero  = scaleContinuousNumber(continuousZero, frequency);
+        discreteZero = toDiscrete(continuousScaledZero);
+        discreteZeros.push(new Position(zPlane, discreteZero.re, discreteZero.im));
     }
 
-    updateDigitalPoleZeros(digitalPoles, digitalZeros);
+    updateDiscretePoleZeros(discretePoles, discreteZeros);
 
-    drawZPlaneCanvas(digitalPoles, digitalZeros);
+    drawZPlaneCanvas(discretePoles, discreteZeros);
 
-    drawFilterResponse(digitalPoles, digitalZeros);
+    drawFilterResponse(discretePoles, discreteZeros);
 }
 
 function drawFromZPlane()
@@ -303,8 +302,8 @@ function drawFromZPlane()
     consoleWrite("current frequency: " + frequency);
     consoleWrite("prewarped frequency: " + preWarp(frequency));
 
-    let digitalPoles = [];
-    let digitalZeros = [];
+    let discretePoles = [];
+    let discreteZeros = [];
     for(let i = 1; i < maxOrder + 1; i++)
     {
         const inputZPX = document.getElementById("zp-x" + String(i)).value;
@@ -314,39 +313,39 @@ function drawFromZPlane()
         
         if(inputZPX && inputZPY)
         {
-            digitalPoles.push(new Position(zPlane, inputZPX, inputZPY));
+            discretePoles.push(new Position(zPlane, inputZPX, inputZPY));
         }
         if(inputZZX && inputZZY)
         {
-            digitalZeros.push(new Position(zPlane, inputZZX, inputZZY));
+            discreteZeros.push(new Position(zPlane, inputZZX, inputZZY));
         }
     }
     
-    drawZPlaneCanvas(digitalPoles, digitalZeros);
+    drawZPlaneCanvas(discretePoles, discreteZeros);
 
-    drawFilterResponse(digitalPoles, digitalZeros);
+    drawFilterResponse(discretePoles, discreteZeros);
 
-    let analogPoles = [];
-    for(var i = 0; i < digitalPoles.length; i++)
+    let continuousPoles = [];
+    for(var i = 0; i < discretePoles.length; i++)
     {
-        digitalPole = new Complex(digitalPoles[i].valueX, digitalPoles[i].valueY);
-        analogPole = toAnalog(digitalPole);
-        downScaledAnalogPole = normalizeAnalogVariable(analogPole, frequency);
-        analogPoles.push( new Position(sPlane, downScaledAnalogPole.re, downScaledAnalogPole.im) );
+        discretePole = new Complex(discretePoles[i].valueX, discretePoles[i].valueY);
+        continuousPole = toContinuous(discretePole);
+        downScaledContinuousPole = normalizeContinuousNumber(continuousPole, frequency);
+        continuousPoles.push( new Position(sPlane, downScaledContinuousPole.re, downScaledContinuousPole.im) );
     }
     
-    let analogZeros = [];
-    for(var i = 0; i < digitalZeros.length; i++)
+    let continuousZeros = [];
+    for(var i = 0; i < discreteZeros.length; i++)
     {
-        digitalZero = new Complex(digitalZeros[i].valueX, digitalZeros[i].valueY);
-        analogZero = toAnalog(digitalZero);
-        downScaledAnalogZero = normalizeAnalogVariable(analogZero, frequency);
-        analogZeros.push( new Position(sPlane, downScaledAnalogZero.re, downScaledAnalogZero.im) );
+        discreteZero = new Complex(discreteZeros[i].valueX, discreteZeros[i].valueY);
+        continuousZero = toContinuous(discreteZero);
+        downScaledContinuousZero = normalizeContinuousNumber(continuousZero, frequency);
+        continuousZeros.push( new Position(sPlane, downScaledContinuousZero.re, downScaledContinuousZero.im) );
     }
 
-    updateAnalogPoleZeros(analogPoles, analogZeros);
+    updateContinuousPoleZeros(continuousPoles, continuousZeros);
 
-    drawLaplaceCanvas(analogPoles, analogZeros);
+    drawLaplaceCanvas(continuousPoles, continuousZeros);
 }
 
 ///////////////////////// GUI CALLBACKS
