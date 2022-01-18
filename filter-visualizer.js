@@ -28,6 +28,7 @@ function drawFilterResponse(polePositions, zeroPositions)
 
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
+    // TODO: find a better way to show the normalized frequency response
     let normalization = 1.0;
     if(type == 0)
     {
@@ -37,11 +38,12 @@ function drawFilterResponse(polePositions, zeroPositions)
     {
         normalization = 1.0 / transferFunction(Complex(-1)).abs();
     }
-    else if(type == 2)
-    {
-        const magnitudeAtFrequency = transferFunction(new Complex({ arg: (frequency / (0.5 * sampleRate) * Math.PI), abs: 1.0 })).abs();
-        normalization = 1.0 / magnitudeAtFrequency;
-    }
+    // Bandpass: 
+    // else if(type == 2)
+    // {
+    //     const magnitudeAtFrequency = transferFunction(new Complex({ arg: (frequency / (0.5 * sampleRate) * Math.PI), abs: 1.0 })).abs();
+    //     normalization = 1.0 / magnitudeAtFrequency;
+    // }
     
     ctx.beginPath();
     response.yMin = 0;
@@ -251,7 +253,6 @@ function drawFromZPlane()
         {
             digitalZeros.push(new Position(zPlane, inputZZX, inputZZY));
         }
-        console.log(inputZZX);
     }
     
     drawZPlaneCanvas(digitalPoles, digitalZeros);
@@ -300,7 +301,7 @@ function setButterworth()
 
     for(var i = 0; i < maxOrder; i++)
     {
-        zeroType = (type == 2) ? i % 2 : type;
+        zeroType = type;
         document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
         document.getElementById("sz-y" + (i+1) ).value = order > i ? ( zeroType == 0 ? 9999999 : 0 ) : null;
     }
