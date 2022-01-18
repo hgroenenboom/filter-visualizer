@@ -4,6 +4,7 @@
 // - Will C Pirkle - Designing Audio Effect Plugins in C++
 // - Steven W Smith - The Scientist and Engineer's Guide to Digital Signal Processing
 // - https://www.allaboutcircuits.com/technical-articles/understanding-butterworth-filter-pole-locations/ 
+// - https://en.wikipedia.org/wiki/Chebyshev_filter 
 
 //////////////////////// GLOBALS
 
@@ -406,8 +407,6 @@ function setChebyshev()
     const order = document.getElementById('chebyshevOrder').value;
 
     const rippleDb = Math.pow(document.getElementById('chebyshevRipples').value, 3.0);
-    consoleWrite("chebyshev ripples in dB: " + rippleDb);
-
     const epsilon = Math.sqrt( Math.pow(10.0, rippleDb / 10.0) - 1.0 );
 
     for(var i = 0; i < maxOrder; i++)
