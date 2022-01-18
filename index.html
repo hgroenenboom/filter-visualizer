@@ -18,7 +18,7 @@
 </head>
 <body>
     <div style="display:inline-block;">
-        <h3>discrete settings</h1>
+        <h3>global controls</h1>
         <div style="padding:5px;">
             <p>samplerate</p>
             <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawFromSplane()"></input>
@@ -37,7 +37,7 @@
     </div>
     <hr>
     
-    <h3>analog poles</h3>
+    <h3>continuous poles and zeros (analog)</h3>
     <div style="display:inline-block;">
         <div style="padding:5px;">
             <p>pole 1</p>
@@ -129,20 +129,20 @@
     <hr>
     
     <div style="display:inline-block;">
-        <h4>s-plane</h4>
+        <h4>s-plane (Laplace)</h4>
         <canvas id="sPlane" width=1000 height=1000></canvas>    
     </div>
     <div style="display:inline-block;">
-        <h4>z-plane</h4>
+        <h4>z-plane (Z-transform)</h4>
         <canvas id="zPlane" width=1000 height=1000></canvas>
     </div>
     <div style="display:inline-block;">
-        <h4>filter response</h4>
+        <h4>frequency response (transfer function)</h4>
         <canvas id="response" width=1000 height=1000></canvas>
     </div>
     <hr>
 
-    <h3>digital poles</h3>
+    <h3>discrete poles and zeros (digital)</h3>
     <div style="display:inline-block;">
         <div style="padding:5px;">
             <p>pole 1</p>
@@ -233,7 +233,7 @@
     </div>
     <hr>
 
-    <h3>console</h3>
+    <h3>debug / info</h3>
     <p id="console"></p>  
     
     <script src="filter-visualizer.js"></script>

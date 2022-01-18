@@ -24,7 +24,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     response.width = width;
     response.height = height;
     response.xMin = 0;
-    response.xSize = 100;
+    response.xSize = 300;
     response.yMin = 0;
     response.ySize = 2;
 
