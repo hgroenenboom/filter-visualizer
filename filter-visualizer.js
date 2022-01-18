@@ -1,3 +1,11 @@
+// Sources:
+// - https://www.dsprelated.com/showarticle/1119.php
+// - https://www.chegg.com/homework-help/questions-and-answers/filter-type-ts-s-plane-singularities-low-pass-lp-aole-oo-o-10-dc-gain-2-20-0-b-high-pass-h-q34343154
+// - Will C Pirkle - Designing Audio Effect Plugins in C++
+// - Steven W Smith - The Scientist and Engineer's Guide to Digital Signal Processing
+
+//////////////////////// GLOBALS
+
 const maxOrder = 8;
 
 const width = 500;
