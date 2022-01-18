@@ -53,7 +53,6 @@ function createTransferFunction(poles, zeros)
 {
     return function(s)
     {
-        // all zeroes at -1
         nominator = Complex(1);
         for(var i = 0; i < zeros.length; i++)
         {
