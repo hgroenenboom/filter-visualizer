@@ -13,6 +13,8 @@ const maxOrder = 8;
 const width = 500;
 const height = width;
 
+const closeToInf = 9999999999;
+
 let sampleRate = 44100.0;
 
 FilterNames = {
@@ -244,8 +246,6 @@ function updateDiscretePoleZeros(discretePoles, discreteZeros)
 
 function updateContinuousPoleZeros(continuousPoles, continuousZeros)
 {
-    console.log(continuousPoles);
-
     for(var i = 0; i < continuousPoles.length; i++)
     {
         document.getElementById('sp-x' + (i + 1)).value = continuousPoles[i].valueX.toFixed(6);
@@ -357,6 +357,8 @@ function drawFromZPlane()
         discretePole = new Complex(discretePoles[i].valueX, discretePoles[i].valueY);
         continuousPole = toContinuous(discretePole);
         downScaledContinuousPole = normalizeContinuousNumber(continuousPole, filter.frequency);
+        if(downScaledContinuousPole.im == Infinity) { downScaledContinuousPole.im = closeToInf; }
+        if(downScaledContinuousPole.re == Infinity) { downScaledContinuousPole.re = closeToInf; }
         continuousPoles.push( new Position(sPlane, downScaledContinuousPole.re, downScaledContinuousPole.im) );
     }
     
@@ -366,6 +368,8 @@ function drawFromZPlane()
         discreteZero = new Complex(discreteZeros[i].valueX, discreteZeros[i].valueY);
         continuousZero = toContinuous(discreteZero);
         downScaledContinuousZero = normalizeContinuousNumber(continuousZero, filter.frequency);
+        if(downScaledContinuousZero.im == Infinity) { downScaledContinuousZero.im = closeToInf; }
+        if(downScaledContinuousZero.re == Infinity) { downScaledContinuousZero.re = closeToInf; }
         continuousZeros.push( new Position(sPlane, downScaledContinuousZero.re, downScaledContinuousZero.im) );
     }
 
@@ -416,7 +420,7 @@ function setButterworth()
 
     for(var i = 0; i < maxOrder; i++)
     {
-        const sZeroY = (filter.type == FilterTypes.lowpass) ? 999999 : 0;
+        const sZeroY = (filter.type == FilterTypes.lowpass) ? closeToInf : 0;
         document.getElementById("sz-x" + (i+1) ).value = filter.order > i ? 0 : null;
         document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? sZeroY : null;
     }
@@ -449,7 +453,7 @@ function setChebyshev()
     {
         zeroType = filter.type;
         document.getElementById("sz-x" + (i+1) ).value = filter.order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? 9999999 : null;
+        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? closeToInf : null;
     }
     for(var i = 1; i < maxOrder + 1; i++)
     {
@@ -492,7 +496,7 @@ setFrequency(true);
 document.getElementById("sp-x1").value = -1;
 document.getElementById("sp-y1").value = 0;
 document.getElementById("sz-x1").value = 0;
-document.getElementById("sz-y1").value = 9999999;
+document.getElementById("sz-y1").value = closeToInf;
 
 ///////////////////////// START APPLICATION
 
