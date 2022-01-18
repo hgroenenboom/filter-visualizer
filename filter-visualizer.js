@@ -16,6 +16,11 @@ let sampleRate = 44100.0;
 let frequency = 11025.0;
 let type = 0;
 
+function todos()
+{
+    return "TODOs: improve filter normalization";
+}
+
 ///////////////////////// DRAWING FUNCTIONS
 
 function drawFilterResponse(polePositions, zeroPositions)
@@ -213,6 +218,7 @@ function updateDigitalPoleZeros(digitalPoles, digitalZeros)
 function drawFromSplane()
 {
     consoleClear();
+    consoleWrite(todos());
     
     let analogPoles = [];
     let analogZeros = [];
@@ -265,6 +271,7 @@ function drawFromSplane()
 function drawFromZPlane()
 {
     consoleClear();
+    consoleWrite(todos());
 
     let digitalPoles = [];
     let digitalZeros = [];
