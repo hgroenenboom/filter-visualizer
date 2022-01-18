@@ -6,126 +6,226 @@
         p {
             margin: 0;
         }
-
+        
         h3 {
             margin: 2;
         }
-
+        
         h4 {
             margin: 2;
         }
     </style>
+    <link type="text/css" rel="stylesheet" href="tab.css"></link>
 </head>
 <body>
-    <div style="display:inline-block;">
-        <h3>global controls</h1>
-        <div style="padding:5px;">
-            <p>samplerate</p>
-            <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawFromSplane()"></input>
+    <div class="tab">
+        <button id="defaultTab" class="tablinks" onclick="openTab(event, 'global-controls')">Global controls</button>
+        <button class="tablinks" onclick="openTab(event, 'continuous-poles-zeros')">Continuous poles/zeros (analog)</button>
+        <button class="tablinks" onclick="openTab(event, 'discrete-poles-zeros')">Discrete poles/zeros (digital)</button>
+    </div>
+
+    <div id="global-controls" class="tabcontent">
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>samplerate</p>
+                <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>frequency</p>
+                <input id="frequency" oninput="setFrequency(false);"></input>
+                <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>frequency</p>
-            <input id="frequency" oninput="setFrequency(false);"></input>
-            <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
+        <div style="display:inline-block;">
+            <p>butterworth filter type</p>
+            <input id="butterworthType" type="range" min=0 max=1 oninput="setButterworth();">
+            <p>butterworth filter order</p>
+            <input id="butterworthOrder" type="range" min=1 max=8 oninput="setButterworth();">
         </div>
     </div>
-    <div style="display:inline-block;">
-        <p>butterworth filter type</p>
-        <input id="butterworthType" type="range" min=0 max=1 oninput="setButterworth();">
-        <p>butterworth filter order</p>
-        <input id="butterworthOrder" type="range" min=1 max=8 oninput="setButterworth();">
-    </div>
-    <hr>
     
-    <h3>continuous poles and zeros (analog)</h3>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>pole 1</p>
-            <input id="sp-x1" oninput="drawFromSplane()"></input>
-            <input id="sp-y1" oninput="drawFromSplane()"></input>
+    <div id="continuous-poles-zeros" class="tabcontent">
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>pole 1</p>
+                <input id="sp-x1" oninput="drawFromSplane()"></input>
+                <input id="sp-y1" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 2</p>
+                <input id="sp-x2" oninput="drawFromSplane()"></input>
+                <input id="sp-y2" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 3</p>
+                <input id="sp-x3" oninput="drawFromSplane()"></input>
+                <input id="sp-y3" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 4</p>
+                <input id="sp-x4" oninput="drawFromSplane()"></input>
+                <input id="sp-y4" oninput="drawFromSplane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 2</p>
-            <input id="sp-x2" oninput="drawFromSplane()"></input>
-            <input id="sp-y2" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>pole 5</p>
+                <input id="sp-x5" oninput="drawFromSplane()"></input>
+                <input id="sp-y5" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 6</p>
+                <input id="sp-x6" oninput="drawFromSplane()"></input>
+                <input id="sp-y6" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 7</p>
+                <input id="sp-x7" oninput="drawFromSplane()"></input>
+                <input id="sp-y7" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 8</p>
+                <input id="sp-x8" oninput="drawFromSplane()"></input>
+                <input id="sp-y8" oninput="drawFromSplane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 3</p>
-            <input id="sp-x3" oninput="drawFromSplane()"></input>
-            <input id="sp-y3" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>zero 1</p>
+                <input id="sz-x1" oninput="drawFromSplane()"></input>
+                <input id="sz-y1" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 2</p>
+                <input id="sz-x2" oninput="drawFromSplane()"></input>
+                <input id="sz-y2" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 3</p>
+                <input id="sz-x3" oninput="drawFromSplane()"></input>
+                <input id="sz-y3" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 4</p>
+                <input id="sz-x4" oninput="drawFromSplane()"></input>
+                <input id="sz-y4" oninput="drawFromSplane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 4</p>
-            <input id="sp-x4" oninput="drawFromSplane()"></input>
-            <input id="sp-y4" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>zero 5</p>
+                <input id="sz-x5" oninput="drawFromSplane()"></input>
+                <input id="sz-y5" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 6</p>
+                <input id="sz-x6" oninput="drawFromSplane()"></input>
+                <input id="sz-y6" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 7</p>
+                <input id="sz-x7" oninput="drawFromSplane()"></input>
+                <input id="sz-y7" oninput="drawFromSplane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 8</p>
+                <input id="sz-x8" oninput="drawFromSplane()"></input>
+                <input id="sz-y8" oninput="drawFromSplane()"></input>
+            </div>
         </div>
     </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>pole 5</p>
-            <input id="sp-x5" oninput="drawFromSplane()"></input>
-            <input id="sp-y5" oninput="drawFromSplane()"></input>
+
+    <div id="discrete-poles-zeros" class="tabcontent">
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>pole 1</p>
+                <input id="zp-x1" oninput="drawFromZPlane()"></input>
+                <input id="zp-y1" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 2</p>
+                <input id="zp-x2" oninput="drawFromZPlane()"></input>
+                <input id="zp-y2" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 3</p>
+                <input id="zp-x3" oninput="drawFromZPlane()"></input>
+                <input id="zp-y3" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 4</p>
+                <input id="zp-x4" oninput="drawFromZPlane()"></input>
+                <input id="zp-y4" oninput="drawFromZPlane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 6</p>
-            <input id="sp-x6" oninput="drawFromSplane()"></input>
-            <input id="sp-y6" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>pole 5</p>
+                <input id="zp-x5" oninput="drawFromZPlane()"></input>
+                <input id="zp-y5" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 6</p>
+                <input id="zp-x6" oninput="drawFromZPlane()"></input>
+                <input id="zp-y6" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 7</p>
+                <input id="zp-x7" oninput="drawFromZPlane()"></input>
+                <input id="zp-y7" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>pole 8</p>
+                <input id="zp-x8" oninput="drawFromZPlane()"></input>
+                <input id="zp-y8" oninput="drawFromZPlane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 7</p>
-            <input id="sp-x7" oninput="drawFromSplane()"></input>
-            <input id="sp-y7" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>zero 1</p>
+                <input id="zz-x1" oninput="drawFromZPlane()"></input>
+                <input id="zz-y1" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 2</p>
+                <input id="zz-x2" oninput="drawFromZPlane()"></input>
+                <input id="zz-y2" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 3</p>
+                <input id="zz-x3" oninput="drawFromZPlane()"></input>
+                <input id="zz-y3" oninput="drawFromZPlane()"></input>
+            </div>
+            <div style="padding:5px;">
+                <p>zero 4</p>
+                <input id="zz-x4" oninput="drawFromZPlane()"></input>
+                <input id="zz-y4" oninput="drawFromZPlane()"></input>
+            </div>
         </div>
-        <div style="padding:5px;">
-            <p>pole 8</p>
-            <input id="sp-x8" oninput="drawFromSplane()"></input>
-            <input id="sp-y8" oninput="drawFromSplane()"></input>
+        <div style="display:inline-block;">
+            <div style="padding:5px;">
+                <p>zero 5</p>
+                <input id="zz-x5" oninput="drawFromZPlane()"></input>
+                <input id="zz-y5" oninput="drawFromZPlane()"></input>
+            </div>
+            <div ztyle="padding:5px;">
+                <p>zero 6</p>
+                <input id="zz-x6" oninput="drawFromZPlane()"></input>
+                <input id="zz-y6" oninput="drawFromZPlane()"></input>
+            </div>
+            <div ztyle="padding:5px;">
+                <p>zero 7</p>
+                <input id="zz-x7" oninput="drawFromZPlane()"></input>
+                <input id="zz-y7" oninput="drawFromZPlane()"></input>
+            </div>
+            <div ztyle="padding:5px;">
+                <p>zero 8</p>
+                <input id="zz-x8" oninput="drawFromZPlane()"></input>
+                <input id="zz-y8" oninput="drawFromZPlane()"></input>
+            </div>
         </div>
     </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>zero 1</p>
-            <input id="sz-x1" oninput="drawFromSplane()"></input>
-            <input id="sz-y1" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 2</p>
-            <input id="sz-x2" oninput="drawFromSplane()"></input>
-            <input id="sz-y2" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 3</p>
-            <input id="sz-x3" oninput="drawFromSplane()"></input>
-            <input id="sz-y3" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 4</p>
-            <input id="sz-x4" oninput="drawFromSplane()"></input>
-            <input id="sz-y4" oninput="drawFromSplane()"></input>
-        </div>
-    </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>zero 5</p>
-            <input id="sz-x5" oninput="drawFromSplane()"></input>
-            <input id="sz-y5" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 6</p>
-            <input id="sz-x6" oninput="drawFromSplane()"></input>
-            <input id="sz-y6" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 7</p>
-            <input id="sz-x7" oninput="drawFromSplane()"></input>
-            <input id="sz-y7" oninput="drawFromSplane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 8</p>
-            <input id="sz-x8" oninput="drawFromSplane()"></input>
-            <input id="sz-y8" oninput="drawFromSplane()"></input>
-        </div>
-    </div>
+    
     <hr>
     
     <div style="display:inline-block;">
@@ -142,99 +242,9 @@
     </div>
     <hr>
 
-    <h3>discrete poles and zeros (digital)</h3>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>pole 1</p>
-            <input id="zp-x1" oninput="drawFromZPlane()"></input>
-            <input id="zp-y1" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 2</p>
-            <input id="zp-x2" oninput="drawFromZPlane()"></input>
-            <input id="zp-y2" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 3</p>
-            <input id="zp-x3" oninput="drawFromZPlane()"></input>
-            <input id="zp-y3" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 4</p>
-            <input id="zp-x4" oninput="drawFromZPlane()"></input>
-            <input id="zp-y4" oninput="drawFromZPlane()"></input>
-        </div>
-    </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>pole 5</p>
-            <input id="zp-x5" oninput="drawFromZPlane()"></input>
-            <input id="zp-y5" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 6</p>
-            <input id="zp-x6" oninput="drawFromZPlane()"></input>
-            <input id="zp-y6" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 7</p>
-            <input id="zp-x7" oninput="drawFromZPlane()"></input>
-            <input id="zp-y7" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>pole 8</p>
-            <input id="zp-x8" oninput="drawFromZPlane()"></input>
-            <input id="zp-y8" oninput="drawFromZPlane()"></input>
-        </div>
-    </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>zero 1</p>
-            <input id="zz-x1" oninput="drawFromZPlane()"></input>
-            <input id="zz-y1" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 2</p>
-            <input id="zz-x2" oninput="drawFromZPlane()"></input>
-            <input id="zz-y2" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 3</p>
-            <input id="zz-x3" oninput="drawFromZPlane()"></input>
-            <input id="zz-y3" oninput="drawFromZPlane()"></input>
-        </div>
-        <div style="padding:5px;">
-            <p>zero 4</p>
-            <input id="zz-x4" oninput="drawFromZPlane()"></input>
-            <input id="zz-y4" oninput="drawFromZPlane()"></input>
-        </div>
-    </div>
-    <div style="display:inline-block;">
-        <div style="padding:5px;">
-            <p>zero 5</p>
-            <input id="zz-x5" oninput="drawFromZPlane()"></input>
-            <input id="zz-y5" oninput="drawFromZPlane()"></input>
-        </div>
-        <div ztyle="padding:5px;">
-            <p>zero 6</p>
-            <input id="zz-x6" oninput="drawFromZPlane()"></input>
-            <input id="zz-y6" oninput="drawFromZPlane()"></input>
-        </div>
-        <div ztyle="padding:5px;">
-            <p>zero 7</p>
-            <input id="zz-x7" oninput="drawFromZPlane()"></input>
-            <input id="zz-y7" oninput="drawFromZPlane()"></input>
-        </div>
-        <div ztyle="padding:5px;">
-            <p>zero 8</p>
-            <input id="zz-x8" oninput="drawFromZPlane()"></input>
-            <input id="zz-y8" oninput="drawFromZPlane()"></input>
-        </div>
-    </div>
-    <hr>
-
     <h3>debug / info</h3>
     <p id="console"></p>  
     
+    <script src="tab.js"></script>
     <script src="filter-visualizer.js"></script>
 </body>
