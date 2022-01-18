@@ -14,8 +14,25 @@ const width = 500;
 const height = width;
 
 let sampleRate = 44100.0;
-let frequency = 11025.0;
-let type = 0;
+
+FilterNames = {
+    Unknown : 1,
+    Butterworth : 2,
+    Chebyshev : 3,
+}
+
+FilterTypes = {
+    unknown : 1,
+    lowpass : 2,
+    highpass : 3
+}
+
+let filter = {
+    'name': "",
+    'type': FilterTypes.lowpass,
+    'frequency': 11025.0,
+    'order': 0,
+};
 
 function todos()
 {
@@ -25,6 +42,28 @@ function todos()
 }
 
 ///////////////////////// DRAWING FUNCTIONS
+
+function filterNormalization(transferFunction)
+{
+    if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.lowpass)
+    {
+        return 1.0 / transferFunction(new Complex(1.0, 0)).abs();
+    }
+    else if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.highpass)
+    {
+        return 1.0 / transferFunction(Complex(-1, 0)).abs();
+    }
+    else
+    {
+        let max = 0.0;
+        for(var i = 0; i < response.xSize; i++)
+        {
+            const w = Math.PI * i / response.xSize;
+            max = Math.max(max, transferFunction(Complex({ arg: w, abs: 1 })).abs());
+        }
+        return 1.0 / max;
+    }
+}
 
 function drawFilterResponse(polePositions, zeroPositions)
 {
@@ -53,7 +92,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     ctx.fillText("0db", 3, zerodbPos.y - 3, 30);
     ctx.fillText("-3db", 3, min3dbPos.y - 3, 30);
     ctx.fillText("-6db", 3, min6dbPos.y - 3, 30);
-    const frequencyPos = new Position(response, response.xSize * frequency / (0.5 * sampleRate), 0);
+    const frequencyPos = new Position(response, response.xSize * filter.frequency / (0.5 * sampleRate), 0);
     ctx.strokeRect(frequencyPos.x, 1, 0, height);
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(frequencyPos.x - 10, 1, 20, 16);
@@ -62,22 +101,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
-    // TODO: find a better way to show the normalized frequency response
-    let normalization = 1.0;
-    if(type == 0)
-    {
-        normalization = 1.0 / transferFunction(Complex(1)).abs();
-    }
-    else if(type == 1)
-    {
-        normalization = 1.0 / transferFunction(Complex(-1)).abs();
-    }
-    // Bandpass: 
-    // else if(type == 2)
-    // {
-    //     const magnitudeAtFrequency = transferFunction(new Complex({ arg: (frequency / (0.5 * sampleRate) * Math.PI), abs: 1.0 })).abs();
-    //     normalization = 1.0 / magnitudeAtFrequency;
-    // }
+    let normalization = filterNormalization(transferFunction);
     
     ctx.beginPath();
     response.yMin = 0;
@@ -248,8 +272,8 @@ function drawFromSplane()
 {
     consoleClear();
     consoleWrite(todos());
-    consoleWrite("current frequency: " + frequency);
-    consoleWrite("prewarped frequency: " + preWarp(frequency));
+    consoleWrite("current frequency: " + filter.frequency);
+    consoleWrite("prewarped frequency: " + preWarp(filter.frequency));
     
     let continuousPoles = [];
     let continuousZeros = [];
@@ -276,7 +300,7 @@ function drawFromSplane()
     for(var i = 0; i < continuousPoles.length; i++)
     {
         continuousPole = new Complex(continuousPoles[i].valueX, continuousPoles[i].valueY);
-        continuousScaledPole = scaleContinuousNumber(continuousPole, frequency);
+        continuousScaledPole = scaleContinuousNumber(continuousPole, filter.frequency);
         discretePole = toDiscrete(continuousScaledPole);
         discretePoles.push(new Position(zPlane, discretePole.re, discretePole.im));
     }
@@ -285,7 +309,7 @@ function drawFromSplane()
     for(var i = 0; i < continuousZeros.length; i++)
     {
         continuousZero = new Complex(continuousZeros[i].valueX, continuousZeros[i].valueY);
-        continuousScaledZero  = scaleContinuousNumber(continuousZero, frequency);
+        continuousScaledZero  = scaleContinuousNumber(continuousZero, filter.frequency);
         discreteZero = toDiscrete(continuousScaledZero);
         discreteZeros.push(new Position(zPlane, discreteZero.re, discreteZero.im));
     }
@@ -301,8 +325,8 @@ function drawFromZPlane()
 {
     consoleClear();
     consoleWrite(todos());
-    consoleWrite("current frequency: " + frequency);
-    consoleWrite("prewarped frequency: " + preWarp(frequency));
+    consoleWrite("current frequency: " + filter.frequency);
+    consoleWrite("prewarped frequency: " + preWarp(filter.frequency));
 
     let discretePoles = [];
     let discreteZeros = [];
@@ -332,7 +356,7 @@ function drawFromZPlane()
     {
         discretePole = new Complex(discretePoles[i].valueX, discretePoles[i].valueY);
         continuousPole = toContinuous(discretePole);
-        downScaledContinuousPole = normalizeContinuousNumber(continuousPole, frequency);
+        downScaledContinuousPole = normalizeContinuousNumber(continuousPole, filter.frequency);
         continuousPoles.push( new Position(sPlane, downScaledContinuousPole.re, downScaledContinuousPole.im) );
     }
     
@@ -341,7 +365,7 @@ function drawFromZPlane()
     {
         discreteZero = new Complex(discreteZeros[i].valueX, discreteZeros[i].valueY);
         continuousZero = toContinuous(discreteZero);
-        downScaledContinuousZero = normalizeContinuousNumber(continuousZero, frequency);
+        downScaledContinuousZero = normalizeContinuousNumber(continuousZero, filter.frequency);
         continuousZeros.push( new Position(sPlane, downScaledContinuousZero.re, downScaledContinuousZero.im) );
     }
 
@@ -366,20 +390,35 @@ function setFrequency(fromSlider)
         slider.value = box.value / sampleRate;
     }
 
-    frequency = box.value;
+    filter.frequency = box.value;
     drawFromSplane();
+}
+
+function setFromSPlane()
+{
+    filter.name = FilterNames.unknown;
+    filter.type = FilterTypes.unknown;
+    drawFromSplane();
+}
+
+function setFromZPlane()
+{
+    filter.name = FilterNames.unknown;
+    filter.type = FilterTypes.unknown;
+    drawFromZPlane();
 }
 
 function setButterworth()
 {
-    type = document.getElementById('butterworthType').value;
-    const order = document.getElementById('butterworthOrder').value;
+    filter.name = FilterNames.Butterworth;
+    filter.type = document.getElementById('butterworthType').value;
+    filter.order = document.getElementById('butterworthOrder').value;
 
     for(var i = 0; i < maxOrder; i++)
     {
-        zeroType = type;
-        document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = order > i ? ( zeroType == 0 ? 9999999 : 0 ) : null;
+        const sZeroY = (filter.type == FilterTypes.lowpass) ? 999999 : 0;
+        document.getElementById("sz-x" + (i+1) ).value = filter.order > i ? 0 : null;
+        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? sZeroY : null;
     }
     for(var i = 1; i < maxOrder + 1; i++)
     {
@@ -387,9 +426,9 @@ function setButterworth()
         document.getElementById("sp-y" + i ).value = null;
     }
 
-    for(var i = 1; i <= order; i++)
+    for(var i = 1; i <= filter.order; i++)
     {
-        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * order );
+        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * filter.order );
         document.getElementById("sp-x" + i ).value = parseFloat(- Math.sin(theta)).toFixed(6);
         document.getElementById("sp-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
     }
@@ -399,21 +438,18 @@ function setButterworth()
 
 function setChebyshev()
 {
-    // TODO: fix normalization
-    // TODO: fix highpass
-    // TODO: fix -3db centering
-
-    type = 0;
-    const order = document.getElementById('chebyshevOrder').value;
+    filter.name = FilterNames.Chebyshev;
+    filter.type = FilterTypes.lowpass;
+    filter.order = document.getElementById('chebyshevOrder').value;
 
     const rippleDb = Math.pow(document.getElementById('chebyshevRipples').value, 3.0);
     const epsilon = Math.sqrt( Math.pow(10.0, rippleDb / 10.0) - 1.0 );
 
     for(var i = 0; i < maxOrder; i++)
     {
-        zeroType = type;
-        document.getElementById("sz-x" + (i+1) ).value = order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = order > i ? 9999999 : null;
+        zeroType = filter.type;
+        document.getElementById("sz-x" + (i+1) ).value = filter.order > i ? 0 : null;
+        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? 9999999 : null;
     }
     for(var i = 1; i < maxOrder + 1; i++)
     {
@@ -421,11 +457,11 @@ function setChebyshev()
         document.getElementById("sp-y" + i ).value = null;
     }
 
-    for(var i = 1; i <= order; i++)
+    for(var i = 1; i <= filter.order; i++)
     {
-        const theta = (Math.PI / 2.0) * (2.0 * i - 1.0) / order;
-        const re = - Math.sinh( (1.0 / order) * Math.asinh( 1.0 / epsilon ) ) * Math.sin(theta);
-        const im = Math.cosh( (1.0 / order) * Math.asinh( 1.0 / epsilon ) ) * Math.cos(theta);
+        const theta = (Math.PI / 2.0) * (2.0 * i - 1.0) / filter.order;
+        const re = - Math.sinh( (1.0 / filter.order) * Math.asinh( 1.0 / epsilon ) ) * Math.sin(theta);
+        const im = Math.cosh( (1.0 / filter.order) * Math.asinh( 1.0 / epsilon ) ) * Math.cos(theta);
 
         document.getElementById("sp-x" + i ).value = parseFloat(re).toFixed(6);
         document.getElementById("sp-y" + i ).value = parseFloat(im).toFixed(6);
@@ -450,8 +486,8 @@ function consoleWrite(text)
 ///////////////////////// INITIALIZATION OF DOM ELEMENTS
 
 document.getElementById("samplerate").value = sampleRate;
-document.getElementById("frequency").value = frequency;
-setFrequency(false);
+document.getElementById("frequency").value = filter.frequency / sampleRate;
+setFrequency(true);
 
 document.getElementById("sp-x1").value = -1;
 document.getElementById("sp-y1").value = 0;
