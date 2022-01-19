@@ -49,6 +49,10 @@ function filterNormalization(transferFunction)
     {
         return 1.0 / transferFunction(new Complex(1.0, 0)).abs();
     }
+    else if(filter.name == FilterNames.Chebyshev)
+    {
+        return 1.0 / transferFunction(Complex({ arg: filter.frequency / sampleRate, abs: 1 })).abs();
+    }
     else if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.highpass)
     {
         return 1.0 / transferFunction(Complex(-1, 0)).abs();
