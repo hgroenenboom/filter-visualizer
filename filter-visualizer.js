@@ -45,12 +45,6 @@ function todos()
 
 function filterNormalization(transferFunction)
 {
-    // TODO: ugly exception
-    if(filter.name == FilterNames.Chebyshev && filter.type == FilterTypes.highpass)
-    {
-        filter.frequency = document.getElementById("frequency").value;
-    }
-
     if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.lowpass)
     {
         return 1.0 / transferFunction(new Complex(1.0, 0)).abs();
@@ -457,17 +451,11 @@ function setChebyshev()
     const rippleDb = Math.pow(document.getElementById('chebyshevRipples').value, 3.0);
     const epsilon = Math.sqrt( Math.pow(10.0, rippleDb / 10.0) - 1.0 );
 
-    // TODO: highpass now works by complete inverting the filter and also supplying an inverted input frequency, this is weird
-    if(filter.type == FilterTypes.highpass)
-    {
-        filter.frequency = sampleRate / 2 - filter.frequency;
-    }
-
     for(var i = 0; i < maxOrder; i++)
     {
-        zeroType = filter.type;
+        zeroType = filter.type == FilterTypes.lowpass;
         document.getElementById("sz-x" + (i+1) ).value = filter.order > i ? 0 : null;
-        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? closeToInf : null;
+        document.getElementById("sz-y" + (i+1) ).value = filter.order > i ? (zeroType ? closeToInf : 0) : null;
     }
     for(var i = 1; i < maxOrder + 1; i++)
     {
@@ -485,18 +473,20 @@ function setChebyshev()
         document.getElementById("sp-y" + i ).value = parseFloat(im).toFixed(6);
     }
 
-    drawFromSplane();
-
     if(filter.type == FilterTypes.highpass)
     {
-        for(var i = 1; i < maxOrder + 1; i++)
+        for(var i = 1; i <= filter.order; i++)
         {
-            document.getElementById("zp-x" + i ).value *= -1.0;
-            document.getElementById("zz-x" + i ).value *= -1.0;
+            let pole = Complex(document.getElementById("sp-x" + i ).value, document.getElementById("sp-y" + i ).value);
+            let onCircle = pole.sign();
+            let reciprocalPole = onCircle.mul({ abs: onCircle.abs() / pole.abs(), arg: 0 });
+            console.log(reciprocalPole);
+            document.getElementById("sp-x" + i).value = reciprocalPole.re;
+            document.getElementById("sp-y" + i).value = reciprocalPole.im;
         }
-
-        drawFromZPlane();
     }
+
+    drawFromSplane();
 }
 
 ///////////////////////// DEBUGGING
