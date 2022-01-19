@@ -45,13 +45,15 @@ function todos()
 
 function filterNormalization(transferFunction)
 {
+    // TODO: ugly exception
+    if(filter.name == FilterNames.Chebyshev && filter.type == FilterTypes.highpass)
+    {
+        filter.frequency = document.getElementById("frequency").value;
+    }
+
     if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.lowpass)
     {
         return 1.0 / transferFunction(new Complex(1.0, 0)).abs();
-    }
-    else if(filter.name == FilterNames.Chebyshev)
-    {
-        return 1.0 / transferFunction(Complex({ arg: filter.frequency / sampleRate, abs: 1 })).abs();
     }
     else if(filter.name == FilterNames.Butterworth && filter.type == FilterTypes.highpass)
     {
@@ -209,6 +211,10 @@ function drawLaplaceCanvas(polePositions, zeroPositions)
     ctx.strokeRect(0.5 * width, 0, 0.5 * width, height);
     ctx.fillText("Re", 3, 0.5 * height + 12, 10);
     ctx.strokeRect(0, 0.5 * width, height, 0.5 * width);
+
+    ctx.beginPath();
+    ctx.arc(0.5 * width, 0.5 * height, new Position(zPlane, zPlane.xMin + 1.0, 0.0).x, 0, 2 * Math.PI );
+    ctx.stroke();
 
     for(var i = 0; i < polePositions.length; i++)
     {
@@ -445,11 +451,17 @@ function setButterworth()
 function setChebyshev()
 {
     filter.name = FilterNames.Chebyshev;
-    filter.type = FilterTypes.lowpass;
+    filter.type = document.getElementById('chebyshevType').value;
     filter.order = document.getElementById('chebyshevOrder').value;
 
     const rippleDb = Math.pow(document.getElementById('chebyshevRipples').value, 3.0);
     const epsilon = Math.sqrt( Math.pow(10.0, rippleDb / 10.0) - 1.0 );
+
+    // TODO: highpass now works by complete inverting the filter and also supplying an inverted input frequency, this is weird
+    if(filter.type == FilterTypes.highpass)
+    {
+        filter.frequency = sampleRate / 2 - filter.frequency;
+    }
 
     for(var i = 0; i < maxOrder; i++)
     {
@@ -474,6 +486,17 @@ function setChebyshev()
     }
 
     drawFromSplane();
+
+    if(filter.type == FilterTypes.highpass)
+    {
+        for(var i = 1; i < maxOrder + 1; i++)
+        {
+            document.getElementById("zp-x" + i ).value *= -1.0;
+            document.getElementById("zz-x" + i ).value *= -1.0;
+        }
+
+        drawFromZPlane();
+    }
 }
 
 ///////////////////////// DEBUGGING
