@@ -10,7 +10,7 @@
 
 const maxOrder = 8;
 
-const width = 500;
+const width = 400;
 const height = width;
 
 const closeToInf = 9999999999;
@@ -65,6 +65,58 @@ function filterNormalization(transferFunction)
     }
 }
 
+function drawImpulseResponse(poles, zeros, normalization)
+{
+    let response = document.getElementById("impulse");
+    response.width = width;
+    response.height = height;
+    response.xMin = 0;
+    response.xSize = 100;
+    response.yMin = -1;
+    response.ySize = 2;
+
+    var ctx = response.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#eeeeee";
+    ctx.strokeRect(0, height / 2, width, height / 2);
+    ctx.strokeStyle = "#000000";
+
+    let complexPoles = [];
+    let complexZeros = [];
+    for(var i = 0; i < poles.length; i++)
+    {
+        complexPoles.push(new Complex(poles[i].valueX, poles[i].valueY));
+    }
+    for(var i = 0; i < zeros.length; i++)
+    {
+        complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
+    }
+
+    let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
+    differentialEquation.scale(normalization);
+    consoleWrite(differentialEquation.prettyText());
+
+    let out = 0;
+    let previousPosition = new Position(response, 0, 0);
+    ctx.beginPath();
+    ctx.moveTo(previousPosition.x, previousPosition.y);
+    for(var i = 1; i < 100; i++)
+    {
+        out = differentialEquation.tick(new Complex(i == 1 ? 1 : 0)).re;
+        out = Math.pow(out, 0.25);
+
+        const outPosition = new Position(response, i, out);
+        ctx.lineTo(previousPosition.x, previousPosition.y, outPosition.x, outPosition.y);
+        previousPosition = outPosition;
+    }
+    ctx.stroke();
+}
+
 function drawFilterResponse(polePositions, zeroPositions)
 {
     var response = document.getElementById("response");
@@ -102,6 +154,8 @@ function drawFilterResponse(polePositions, zeroPositions)
     transferFunction = createTransferFunction(polePositions, zeroPositions);
     
     let normalization = filterNormalization(transferFunction);
+
+    drawImpulseResponse(polePositions, zeroPositions, normalization);
     
     ctx.beginPath();
     response.yMin = 0;
@@ -321,8 +375,6 @@ function drawFromSplane()
     drawZPlaneCanvas(discretePoles, discreteZeros);
 
     drawFilterResponse(discretePoles, discreteZeros);
-
-    printDifferentialEquation(discretePoles, discreteZeros);
 }
 
 function drawFromZPlane()
@@ -380,8 +432,6 @@ function drawFromZPlane()
     updateContinuousPoleZeros(continuousPoles, continuousZeros);
 
     drawLaplaceCanvas(continuousPoles, continuousZeros);
-
-    printDifferentialEquation(discretePoles, discreteZeros);
 }
 
 ///////////////////////// GUI CALLBACKS
@@ -484,7 +534,6 @@ function setChebyshev()
             let pole = Complex(document.getElementById("sp-x" + i ).value, document.getElementById("sp-y" + i ).value);
             let onCircle = pole.sign();
             let reciprocalPole = onCircle.mul({ abs: onCircle.abs() / pole.abs(), arg: 0 });
-            console.log(reciprocalPole);
             document.getElementById("sp-x" + i).value = reciprocalPole.re;
             document.getElementById("sp-y" + i).value = reciprocalPole.im;
         }

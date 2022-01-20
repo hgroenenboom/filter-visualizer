@@ -2,6 +2,10 @@ class DifferentialEquation
 {
     constructor(xCoefficients, yCoefficients)
     {
+        this.x = new Delay();
+        this.y = new Delay();
+        this.resetState();
+
         yCoefficients.shift();
         this.coefficients = xCoefficients;
         this.recursionCoefficients = yCoefficients; 
@@ -22,20 +26,38 @@ class DifferentialEquation
         }
     }
 
-    // get(x)
-    // {
-    //     let out = Complex(0, 0);
-    //     for(var i = this.coefficients.length - 1; i >= 0 ; i--)
-    //     {
-    //         let exponent = 1;
-    //         for(var j = 0; j < i; j++)
-    //         {
-    //             exponent *= x;
-    //         }
-    //         out.add( this.coefficients[this.coefficients.length - 1 - i].mul(exponent) );
-    //     }
-    //     return out;
-    // }
+    scale(scalar)
+    {
+        for(var i = 0; i < this.coefficients.length; i++)
+        {
+            this.coefficients[i] = this.coefficients[i].mul( scalar );
+        }
+    }
+
+    resetState()
+    {
+        this.x.set(new Complex(0));
+        this.y.set(new Complex(0));
+    }
+
+    tick(x)
+    {
+        this.x.push(x);
+
+        let out = new Complex(0, 0);
+        for(var i = 0; i <  this.coefficients.length; i++)
+        {
+            out = out.add( this.coefficients[i].mul(this.x.delayed(i)) );
+        }
+        for(var i = 0; i < this.recursionCoefficients.length; i++)
+        {
+            out = out.add( this.recursionCoefficients[i].mul(this.y.delayed(0)) );
+        }
+
+        this.y.push(out);
+
+        return out;
+    }
 
     complexToString(value)
     {

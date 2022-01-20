@@ -48,21 +48,6 @@ function toContinuous(discrete)
     return new Complex(2 * sampleRate, 0).mul( discrete.sub(1, 0).div( discrete.sub(-1, 0) ) );
 }
 
-function printDifferentialEquation(poles, zeros)
-{
-    let complexPoles = [];
-    let complexZeros = [];
-    for(var i = 0; i < poles.length; i++)
-    {
-        complexPoles.push(new Complex(poles[i].valueX, poles[i].valueY));
-    }
-    for(var i = 0; i < zeros.length; i++)
-    {
-        complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
-    }
-    consoleWrite(fromPoleZerosToDifferentialEquation(complexPoles, complexZeros).prettyText());
-}
-
 /** Returns a TransferFunction function for a given set of poles and zeros (Position[]) */
 function createTransferFunction(poles, zeros)
 {
@@ -83,3 +68,40 @@ function createTransferFunction(poles, zeros)
         return nominator.div(denominator);
     };
 }
+
+class Delay
+{
+    constructor()
+    {
+        this.index = 0;
+        this.data = [];
+
+        // TODO: should be max order
+        for(var i = 0; i < 8; i++)
+        {
+            this.data.push(0);
+        }
+    }
+
+    set(value)
+    {
+        for(var i = 0; i < this.data.length; i++)
+        {
+            this.data[i] = value;
+        }
+    }
+
+    delayed(samples)
+    {
+        const index = (this.index - samples) % this.data.length;
+        return this.data[index];
+    }
+
+    push(value)
+    {
+        this.index = (this.index + 1) % this.data.length;
+        this.data[this.index] = value;
+    }
+}
+
+console.log(new Delay());
