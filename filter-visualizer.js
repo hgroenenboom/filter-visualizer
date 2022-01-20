@@ -21,6 +21,7 @@ FilterNames = {
     Unknown : 1,
     Butterworth : 2,
     Chebyshev : 3,
+    Onepole: 4,
 }
 
 FilterTypes = {
@@ -97,7 +98,6 @@ function drawImpulseResponse(poles, zeros, normalization)
         complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
     }
 
-    // let differentialEquation = new DifferentialEquation([0.5], [0, 0.5]); 
     let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
     differentialEquation.normalize(normalization);
     consoleWrite(differentialEquation.prettyText());
@@ -539,6 +539,27 @@ function setChebyshev()
         }
     }
 
+    drawFromSplane();
+}
+
+function setOnepole()
+{
+    filter.name = FilterNames.Onepole;
+    filter.type = document.getElementById('onepoleType').value;
+ 
+    for(var i = 1; i < maxOrder + 1; i++)
+    {
+        document.getElementById("sz-x" + i ).value = null;
+        document.getElementById("sz-y" + i ).value = null;
+        document.getElementById("sp-x" + i ).value = null;
+        document.getElementById("sp-y" + i ).value = null;
+    }
+
+    document.getElementById("sz-x1" ).value = 0;
+    document.getElementById("sz-y1" ).value = filter.type == FilterTypes.lowpass ? 9999999 : 0;
+    document.getElementById("sp-x1" ).value = -1;
+    document.getElementById("sp-y1" ).value = 0;
+       
     drawFromSplane();
 }
 
