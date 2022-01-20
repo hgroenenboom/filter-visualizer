@@ -57,24 +57,24 @@ class DifferentialEquation
         return out;
     }
 
-    complexToString(value)
+    complexToString(value, precision = 3)
     {
         if(value.im < 0.000001)
         {
-            return "" + parseFloat(value.re).toFixed(2);
+            return "" + parseFloat(value.re).toFixed(precision);
         }
         else
         {
-            return "(" + parseFloat(value.re).toFixed(2) + " + " + parseFloat(value.im).toFixed(2) + "i)";
+            return "(" + parseFloat(value.re).toFixed(precision) + " + " + parseFloat(value.im).toFixed(precision) + "i)";
         }
     }
 
-    floatToString(value)
+    floatToString(value, precision = 3)
     {
-        return "" + parseFloat(value).toFixed(2);
+        return "" + parseFloat(value).toFixed(precision);
     }
 
-    prettyText()
+    prettyText(precision = 9)
     {
         let text = "y[n] = ";
 
@@ -82,14 +82,14 @@ class DifferentialEquation
         {
             if(this.coefficients[0] != 0)
             {
-                text += this.floatToString(this.coefficients[0]) + "*x[n] + ";
+                text += this.floatToString(this.coefficients[0], precision) + "*x[n] + ";
             }
         }
         for(var i = 1; i < this.coefficients.length; i++)
         {
             if(this.coefficients[i] != 0)
             {
-                text += this.floatToString(this.coefficients[i]) + "*x[n - " + i + "] + ";
+                text += this.floatToString(this.coefficients[i], precision) + "*x[n - " + i + "] + ";
             }
         }
         
@@ -97,7 +97,7 @@ class DifferentialEquation
         {
             if(this.recursionCoefficients[i] != 0)
             {
-                text += this.floatToString(this.recursionCoefficients[i]) + "*y[n - " + (i + 1) + "] + ";
+                text += this.floatToString(this.recursionCoefficients[i], precision) + "*y[n - " + (i + 1) + "] + ";
             }
         }
         
