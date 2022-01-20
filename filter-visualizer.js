@@ -98,21 +98,18 @@ function drawImpulseResponse(poles, zeros, normalization)
     }
 
     let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
-    differentialEquation.scale(normalization);
+    differentialEquation.normalize(normalization);
     consoleWrite(differentialEquation.prettyText());
 
-    let out = 0;
-    let previousPosition = new Position(response, 0, 0);
     ctx.beginPath();
-    ctx.moveTo(previousPosition.x, previousPosition.y);
+    const initialPosition = new Position(response, 0, 0);
+    ctx.moveTo(initialPosition.x, initialPosition.y);
     for(var i = 1; i < 100; i++)
     {
-        out = differentialEquation.tick(new Complex(i == 1 ? 1 : 0)).re;
-        out = Math.pow(out, 0.25);
+        const out = differentialEquation.tick(new Complex(i == 1 ? 1 : 0)).re;
 
         const outPosition = new Position(response, i, out);
-        ctx.lineTo(previousPosition.x, previousPosition.y, outPosition.x, outPosition.y);
-        previousPosition = outPosition;
+        ctx.lineTo(outPosition.x, outPosition.y);
     }
     ctx.stroke();
 }

@@ -6,28 +6,43 @@ class DifferentialEquation
         this.y = new Delay();
         this.resetState();
 
-        yCoefficients.shift();
         this.coefficients = xCoefficients;
         this.recursionCoefficients = yCoefficients; 
 
         for(var i = 0; i < this.coefficients.length; i++)
         {
-            if(this.coefficients[i].abs() <= 0.000001)
+            if(this.coefficients[i].abs() <= 0.00000000001)
             {
                 this.coefficients[i] = new Complex(0, 0);
             }
         }
+
+        this.recursionCoefficients[0] = new Complex(0, 0);
         for(var i = 0; i < this.recursionCoefficients.length; i++)
         {
-            if(this.recursionCoefficients[i].abs() <= 0.000001)
+            if(this.recursionCoefficients[i].abs() <= 0.0000000001)
             {
                 this.recursionCoefficients[i] = new Complex(0, 0);
             }
         }
     }
 
-    scale(scalar)
+    normalize(scalar)
     {
+        let sumX = 0;
+        let sumY = 0;
+        for(var i = 0; i < this.coefficients.length; i++)
+        {
+            sumX += this.coefficients[i].re;
+        }
+        for(var i = 0; i < this.recursionCoefficients.length; i++)
+        {
+            sumY += this.recursionCoefficients[i].re; 
+        }
+        const normalization = Math.abs(sumY / sumX);
+
+        // TODO: check whether correct
+        // Probably only correct for butterworth filters
         for(var i = 0; i < this.coefficients.length; i++)
         {
             this.coefficients[i] = this.coefficients[i].mul( scalar );
@@ -36,25 +51,26 @@ class DifferentialEquation
 
     resetState()
     {
-        this.x.set(new Complex(0));
-        this.y.set(new Complex(0));
+        this.x.set(0);
+        this.y.set(0);
     }
 
     tick(x)
     {
         this.x.push(x);
 
-        let out = new Complex(0, 0);
-        for(var i = 0; i <  this.coefficients.length; i++)
+        let out = 0;
+        for(var i = 0; i < this.coefficients.length; i++)
         {
-            out = out.add( this.coefficients[i].mul(this.x.delayed(i)) );
+            out += this.coefficients[i].re * this.x.delayed(i);
         }
         for(var i = 0; i < this.recursionCoefficients.length; i++)
         {
-            out = out.add( this.recursionCoefficients[i].mul(this.y.delayed(0)) );
+            out += this.recursionCoefficients[i].re * this.y.delayed(i);
         }
-
+        
         this.y.push(out);
+        console.log(out);
 
         return out;
     }
@@ -94,7 +110,7 @@ class DifferentialEquation
         {
             if(this.recursionCoefficients[i] != 0)
             {
-                text += this.complexToString(this.recursionCoefficients[i]) + "*y[n - " + (i+1) + "] + ";
+                text += this.complexToString(this.recursionCoefficients[i]) + "*y[n - " + i + "] + ";
             }
         }
         
@@ -149,10 +165,21 @@ function sumOfAllPossibleCombinations(array, numCombinations, startIndex = 0, cu
 
 function fromPoleZerosToDifferentialEquation(poles, zeros)
 {
+    // Invert the sign for all zeros
+    // TODO: check whether correct
+    for(var i = 0; i < zeros.length; i++)
+    {
+        zeros[i] = zeros[i].mul(-1);
+    }
+
     let yCoefficients = [];
     for(var i = 0; i < poles.length + 1; i++)
     {
         yCoefficients.push( sumOfAllPossibleCombinations(poles, i) );
+        if(yCoefficients[i] > 1.0)
+        {
+            // throw new Error('yCoefficients for order ' + i + ' is ' + yCoefficients[i]);
+        }
     }
 
     let xCoefficients = [];
@@ -163,3 +190,9 @@ function fromPoleZerosToDifferentialEquation(poles, zeros)
 
     return new DifferentialEquation(xCoefficients, yCoefficients);
 }
+
+console.log(sumOfAllPossibleCombinations([
+    new Complex({ abs: 0.99, arg: 0.3 }),
+    new Complex({ abs: 0.3, arg: 0.1 }),
+    new Complex({ abs: 0.2, arg: -4.3 }),
+], 1));

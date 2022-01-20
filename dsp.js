@@ -93,7 +93,7 @@ class Delay
 
     delayed(samples)
     {
-        const index = (this.index - samples) % this.data.length;
+        const index = (this.index - samples + this.data.length) % this.data.length;
         return this.data[index];
     }
 
@@ -103,5 +103,3 @@ class Delay
         this.data[this.index] = value;
     }
 }
-
-console.log(new Delay());
