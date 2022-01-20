@@ -69,6 +69,26 @@ function createTransferFunction(poles, zeros)
     };
 }
 
+function printArray(numbers, note)
+{
+    console.log('Array:', note);
+    for(var i = 0; i < numbers.length; i++)
+    {
+        console.log('' + i + ' = ' + numbers[i]);
+    }
+    console.log('');
+}
+
+function printComplexNumbers(numbers, note)
+{
+    console.log('Array:', note);
+    for(var i = 0; i < numbers.length; i++)
+    {
+        console.log('' + i + ' = ' + numbers[i].re + " + " + numbers[i].im + "i" );
+    }
+    console.log('');
+}
+
 class Delay
 {
     constructor()

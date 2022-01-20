@@ -97,6 +97,7 @@ function drawImpulseResponse(poles, zeros, normalization)
         complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
     }
 
+    // let differentialEquation = new DifferentialEquation([0.5], [0, 0.5]); 
     let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
     differentialEquation.normalize(normalization);
     consoleWrite(differentialEquation.prettyText());
@@ -106,11 +107,13 @@ function drawImpulseResponse(poles, zeros, normalization)
     ctx.moveTo(initialPosition.x, initialPosition.y);
     for(var i = 1; i < 100; i++)
     {
-        const out = differentialEquation.tick(new Complex(i == 1 ? 1 : 0)).re;
+        const out = differentialEquation.tick(i == 1 ? 1 : 0);
 
         const outPosition = new Position(response, i, out);
         ctx.lineTo(outPosition.x, outPosition.y);
+        ctx.strokeRect(outPosition.x - 3, outPosition.y, 6, 0);
     }
+    ctx.strokeStyle = "#aaaaff";
     ctx.stroke();
 }
 
