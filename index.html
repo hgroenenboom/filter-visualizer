@@ -36,12 +36,14 @@
             <input id="frequency-s" class="inline" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001>
         </div>
         <div class="vertical-block">
+            <button onclick="setButterworth()">butterworth</button>
             <p>butterworth filter type</p>
             <input id="butterworthType" type="range" min=2 max=3 oninput="setButterworth();">
             <p>butterworth filter order</p>
             <input id="butterworthOrder" type="range" min=1 max=8 oninput="setButterworth();">
         </div>
         <div class="vertical-block">
+            <button onclick="setChebyshev()">chebyshev</button>
             <p>chebyshev filter type</p>
             <input id="chebyshevType" type="range" min=2 max=3 oninput="setChebyshev();">
             <p>chebyshev ripples db</p>
@@ -50,6 +52,7 @@
             <input id="chebyshevOrder" type="range" min=1 max=8 oninput="setChebyshev();">
         </div>
         <div class="vertical-block">
+            <button onclick="setOnepole()">onepole</button>
             <p>onepole type</p>
             <input id="onepoleType" type="range" min=2 max=3 oninput="setOnepole();">
         </div>
