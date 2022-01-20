@@ -1,0 +1,14 @@
+.vertical-block {
+    display: inline-block;
+    vertical-align: top;
+    border-right: 1px solid #000;
+    padding: 6px;
+}
+
+.inline {
+    display: inline-block
+}
+
+p {
+    padding: 2px;
+}

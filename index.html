@@ -16,6 +16,7 @@
             margin: 2;
         }
     </style>
+    <link type="text/css" rel="stylesheet" href="filter-visualizer.css"></link>
     <link type="text/css" rel="stylesheet" href="tab.css"></link>
 </head>
 <body>
@@ -26,24 +27,23 @@
     </div>
 
     <div id="global-controls" class="tabcontent">
-        <div style="display:inline-block;">
-            <div style="padding:5px;">
-                <p>samplerate</p>
-                <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawFromSplane()"></input>
-            </div>
-            <div style="padding:5px;">
-                <p>frequency</p>
-                <input id="frequency" oninput="setFrequency(false);"></input>
-                <input id="frequency-s" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001></input>
-            </div>
+        <div class="vertical-block">
+            <p>samplerate</p>
+            <input id="samplerate" oninput="sampleRate=document.getElementById('samplerate').value;drawFromSplane()"></input>
         </div>
-        <div style="display:inline-block;">
+        <div class="vertical-block">
+            <p>frequency</p>
+            <input id="frequency" class="inline" oninput="setFrequency(false);">
+            <p></p>
+            <input id="frequency-s" class="inline" type="range" oninput="setFrequency(true);" min=0.0 max=0.5 step=0.001>
+        </div>
+        <div class="vertical-block">
             <p>butterworth filter type</p>
             <input id="butterworthType" type="range" min=2 max=3 oninput="setButterworth();">
             <p>butterworth filter order</p>
             <input id="butterworthOrder" type="range" min=1 max=8 oninput="setButterworth();">
         </div>
-        <div style="display:inline-block;">
+        <div class="vertical-block">
             <p>chebyshev filter type</p>
             <input id="chebyshevType" type="range" min=2 max=3 oninput="setChebyshev();">
             <p>chebyshev ripples db</p>
@@ -51,7 +51,7 @@
             <p>chebyshev filter order</p>
             <input id="chebyshevOrder" type="range" min=1 max=8 oninput="setChebyshev();">
         </div>
-        <div style="display:inline-block;">
+        <div class="vertical-block">
             <p>onepole type</p>
             <input id="onepoleType" type="range" min=2 max=3 oninput="setOnepole();">
         </div>
