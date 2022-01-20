@@ -321,6 +321,8 @@ function drawFromSplane()
     drawZPlaneCanvas(discretePoles, discreteZeros);
 
     drawFilterResponse(discretePoles, discreteZeros);
+
+    printDifferentialEquation(discretePoles, discreteZeros);
 }
 
 function drawFromZPlane()
@@ -378,6 +380,8 @@ function drawFromZPlane()
     updateContinuousPoleZeros(continuousPoles, continuousZeros);
 
     drawLaplaceCanvas(continuousPoles, continuousZeros);
+
+    printDifferentialEquation(discretePoles, discreteZeros);
 }
 
 ///////////////////////// GUI CALLBACKS

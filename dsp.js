@@ -48,6 +48,21 @@ function toContinuous(discrete)
     return new Complex(2 * sampleRate, 0).mul( discrete.sub(1, 0).div( discrete.sub(-1, 0) ) );
 }
 
+function printDifferentialEquation(poles, zeros)
+{
+    let complexPoles = [];
+    let complexZeros = [];
+    for(var i = 0; i < poles.length; i++)
+    {
+        complexPoles.push(new Complex(poles[i].valueX, poles[i].valueY));
+    }
+    for(var i = 0; i < zeros.length; i++)
+    {
+        complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
+    }
+    consoleWrite(fromPoleZerosToDifferentialEquation(complexPoles, complexZeros).prettyText());
+}
+
 /** Returns a TransferFunction function for a given set of poles and zeros (Position[]) */
 function createTransferFunction(poles, zeros)
 {
