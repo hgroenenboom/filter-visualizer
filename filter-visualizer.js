@@ -22,6 +22,7 @@ FilterNames = {
     Butterworth : 2,
     Chebyshev : 3,
     Onepole: 4,
+    LinkwitzRiley: 5,
 }
 
 FilterTypes = {
@@ -584,6 +585,41 @@ function setOnepoleZero()
     drawFromSplane();
 }
 
+function setLinkwitzRiley()
+{
+    filter.name = FilterNames.LinkwitzRiley;
+    filter.type = document.getElementById('linkwitzRileyType').value;
+    filter.order = 2 << document.getElementById('linkwitzRileyOrder').value;
+
+    const order = filter.order / 2;
+    for(var i = 1; i < order + 1; i++)
+    {
+        const sZeroY = (filter.type == FilterTypes.lowpass) ? closeToInf : 0;
+        document.getElementById("sz-x" + i ).value = 0;
+        document.getElementById("sz-x" + (i+order) ).value = 0;
+        document.getElementById("sz-y" + i ).value = sZeroY;
+        document.getElementById("sz-y" + (i+order) ).value = sZeroY;
+
+        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * (order) );
+
+        let poleX = document.getElementById("sp-x" + i );
+        poleX.value = parseFloat(- Math.sin(theta)).toFixed(6);
+        document.getElementById("sp-x" + (i+order) ).value = poleX.value;            
+        
+        let poleY = document.getElementById("sp-y" + i );
+        poleY.value = parseFloat(Math.cos(theta)).toFixed(6);
+        document.getElementById("sp-y" + (i+order) ).value = poleY.value;
+    }
+    for(var i = 2 * order + 1; i < maxOrder + 1; i++)
+    {
+        document.getElementById("sz-x" + i ).value = null;
+        document.getElementById("sz-y" + i ).value = null;
+        document.getElementById("sp-x" + i ).value = null;
+        document.getElementById("sp-y" + i ).value = null;
+    }
+
+    drawFromSplane();
+}
 
 ///////////////////////// DEBUGGING
 
