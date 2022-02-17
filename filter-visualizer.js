@@ -23,6 +23,7 @@ FilterNames = {
     Chebyshev : 3,
     Onepole: 4,
     LinkwitzRiley: 5,
+    Allpass: 6,
 }
 
 FilterTypes = {
@@ -616,6 +617,31 @@ function setLinkwitzRiley()
         document.getElementById("sz-y" + i ).value = null;
         document.getElementById("sp-x" + i ).value = null;
         document.getElementById("sp-y" + i ).value = null;
+    }
+
+    drawFromSplane();
+}
+
+function setAllpass()
+{
+    filter.name = FilterNames.Allpass;
+    filter.order = document.getElementById('allpassOrder').value;
+
+    for(var i = filter.order; i < maxOrder; i++)
+    {
+        document.getElementById("sz-x" + i ).value = null;
+        document.getElementById("sp-x" + i ).value = null;
+        document.getElementById("sz-y" + i ).value = null;
+        document.getElementById("sp-y" + i ).value = null;
+    }
+
+    for(var i = 1; i <= filter.order; i++)
+    {
+        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * filter.order );
+        document.getElementById("sz-x" + i ).value = parseFloat(Math.sin(theta)).toFixed(6);
+        document.getElementById("sp-x" + i ).value = parseFloat(- Math.sin(theta)).toFixed(6);
+        document.getElementById("sz-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
+        document.getElementById("sp-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
     }
 
     drawFromSplane();
