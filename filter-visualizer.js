@@ -237,7 +237,6 @@ function drawStepResponse(poles, zeros, normalization)
 
     let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
     differentialEquation.normalize(normalization);
-    consoleWrite(differentialEquation.prettyText());
 
     ctx.beginPath();
     const initialPosition = new Position(response, 0, 0);
@@ -251,6 +250,99 @@ function drawStepResponse(poles, zeros, normalization)
         ctx.strokeRect(outPosition.x - 2, outPosition.y, 4, 0);
     }
     ctx.strokeStyle = "#aaaaff";
+    ctx.stroke();
+}
+
+// TODO: not sure if this is right?
+function drawGroupDelay(polePositions, zeroPositions)
+{
+    var response = document.getElementById("groupdelay");
+    response.width = width;
+    response.height = height;
+    response.xMin = 0;
+    response.xSize = 300;
+    response.yMin = 0;
+    response.ySize = 32;
+
+    var ctx = response.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#EEEEEE";
+    const sample8Pos = new Position(response, 0, 8);
+    const sample16Pos = new Position(response, 0, 16);
+    ctx.strokeRect(0, sample8Pos.y, width, 0);
+    ctx.strokeRect(0, sample16Pos.y, width, 0);
+    ctx.fillText("8s", 3, sample8Pos.y - 3, 30);
+    ctx.fillText("16s", 3, sample16Pos.y - 3, 30);
+    const frequencyPos = new Position(response, response.xSize * filter.frequency / (0.5 * sampleRate), 0);
+    ctx.strokeRect(frequencyPos.x, 1, 0, height);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(frequencyPos.x - 10, 1, 20, 16);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("\u03C9", frequencyPos.x - 4, 12, 8);
+    
+    transferFunction = createTransferFunction(polePositions, zeroPositions);
+    
+    let trillingsTijden = [];
+    let unwrappedPhase = [];
+    currentPhase = 0.0;
+    prevArg = 0.0;
+    for(var i = 0; i < response.xSize; i++)
+    {
+        const pos = i / response.xSize;
+        const w = Complex({ arg: pos * Math.PI, abs: 1.0 });
+        const arg = transferFunction(w).arg() / ( 2.0 * Math.PI ); // normalized phase
+        if( i == 0 ) { prevArg = arg; }
+        
+        // unwrap phase
+        if(arg > prevArg && ( arg - prevArg > 0.5 ) )
+        {
+            currentPhase -= 1.0; 
+        }
+        if(arg < prevArg && ( prevArg - arg > 0.5 ) )
+        {
+            currentPhase += 1.0; 
+        }
+        prevArg = arg;
+        
+        unwrappedPhase[i] = currentPhase + arg;
+        trillingsTijden[i] = 1.0 / ( 0.5 * pos ); 
+    }
+
+    ctx.beginPath();
+    for(var i = 0; i < response.xSize; i++)
+    {
+        const phasePos = new Position(response, i, trillingsTijden[i] * Math.abs( unwrappedPhase[i] - unwrappedPhase[0] ) );
+        if(i === 0)
+        {
+            ctx.moveTo(0, phasePos.y);
+        }
+        else
+        {
+            ctx.lineTo(phasePos.x, phasePos.y)
+        }
+    }
+    ctx.strokeStyle = "#0000FF";
+    ctx.stroke();
+
+    ctx.beginPath();
+    for(var i = 0; i < response.xSize; i++)
+    {
+        const phasePos = new Position(response, i, Math.abs( unwrappedPhase[i] - unwrappedPhase[0] ) );
+        if(i === 0)
+        {
+            ctx.moveTo(0, phasePos.y);
+        }
+        else
+        {
+            ctx.lineTo(phasePos.x, phasePos.y)
+        }
+    }
+    ctx.strokeStyle = "#FF9999";
     ctx.stroke();
 }
 
@@ -429,6 +521,7 @@ function drawFromSplane()
     drawZPlaneCanvas(discretePoles, discreteZeros);
 
     drawFilterResponse(discretePoles, discreteZeros);
+    drawGroupDelay(discretePoles, discreteZeros);
 }
 
 function drawFromZPlane()
@@ -460,6 +553,7 @@ function drawFromZPlane()
     drawZPlaneCanvas(discretePoles, discreteZeros);
 
     drawFilterResponse(discretePoles, discreteZeros);
+    drawGroupDelay(discretePoles, discreteZeros);
 
     let continuousPoles = [];
     for(var i = 0; i < discretePoles.length; i++)
