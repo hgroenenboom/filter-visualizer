@@ -8,8 +8,6 @@
 
 //////////////////////// GLOBALS
 
-const maxOrder = 8;
-
 const width = 400;
 const height = width;
 
