@@ -496,10 +496,11 @@ function setFrequency(fromSlider)
 {
     let box = document.getElementById('frequency');
     let slider = document.getElementById('frequency-s');
+    const sliderValue = 0.5 * Math.pow(2.0 * slider.value, 1.6);
 
     if(fromSlider)
     {
-        box.value = slider.value * sampleRate;
+        box.value = sliderValue * sampleRate;
     } 
     else
     {
