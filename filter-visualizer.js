@@ -207,10 +207,11 @@ function drawFilterResponse(polePositions, zeroPositions)
 function drawStepResponse(poles, zeros, normalization)
 {
     let response = document.getElementById("step");
+    const numSamples = 300;
     response.width = width;
     response.height = height;
     response.xMin = 0;
-    response.xSize = 500;
+    response.xSize = numSamples;
     response.yMin = -1;
     response.ySize = 2;
 
@@ -243,13 +244,13 @@ function drawStepResponse(poles, zeros, normalization)
     ctx.beginPath();
     const initialPosition = new Position(response, 0, 0);
     ctx.moveTo(initialPosition.x, initialPosition.y);
-    for(var i = 1; i < 500; i++)
+    for(var i = 1; i < numSamples; i++)
     {
-        const out = differentialEquation.tick((i > 10 && i < 300) ? 0.707 : 0);
+        const out = differentialEquation.tick((i > 10 && i < 0.5 * numSamples) ? 0.707 : 0);
 
         const outPosition = new Position(response, i, out);
         ctx.lineTo(outPosition.x, outPosition.y);
-        ctx.strokeRect(outPosition.x - 1, outPosition.y, 2, 0);
+        ctx.strokeRect(outPosition.x - 2, outPosition.y, 4, 0);
     }
     ctx.strokeStyle = "#aaaaff";
     ctx.stroke();
@@ -680,7 +681,7 @@ function setAllpass()
     filter.name = FilterNames.Allpass;
     filter.order = document.getElementById('allpassOrder').value;
 
-    for(var i = filter.order; i < maxOrder; i++)
+    for(var i = filter.order; i < maxOrder + 1; i++)
     {
         document.getElementById("sz-x" + i ).value = null;
         document.getElementById("sp-x" + i ).value = null;
