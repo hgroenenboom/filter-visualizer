@@ -31,8 +31,8 @@ function updateMaxOrder(newMaxOrder)
             poleInputY = document.createElement("input");
             poleInputX.id = "sp-x" + index;
             poleInputY.id = "sp-y" + index;
-            poleInputX.oninput = "setFromSPlane()";
-            poleInputY.oninput = "setFromSPlane()";
+            poleInputX.oninput = ()=>{ setFromSPlane(); };
+            poleInputY.oninput = ()=>{ setFromSPlane(); };
 
             pole.appendChild(poleName);
             pole.appendChild(poleInputX);
@@ -47,8 +47,8 @@ function updateMaxOrder(newMaxOrder)
             zeroInputY = document.createElement("input");
             zeroInputX.id = "sz-x" + index;
             zeroInputY.id = "sz-y" + index;
-            zeroInputX.oninput = "setFromSPlane()";
-            zeroInputY.oninput = "setFromSPlane()";
+            zeroInputX.oninput = ()=>{ setFromSPlane(); };
+            zeroInputY.oninput = ()=>{ setFromSPlane(); };
 
             zero.appendChild(zeroName);
             zero.appendChild(zeroInputX);
@@ -84,8 +84,8 @@ function updateMaxOrder(newMaxOrder)
             poleInputY = document.createElement("input");
             poleInputX.id = "zp-x" + index;
             poleInputY.id = "zp-y" + index;
-            poleInputX.oninput = "setFromZPlane()";
-            poleInputY.oninput = "setFromZPlane()";
+            poleInputX.oninput = ()=>{ setFromZPlane(); };
+            poleInputY.oninput = ()=>{ setFromZPlane(); };
 
             pole.appendChild(poleName);
             pole.appendChild(poleInputX);
@@ -100,8 +100,8 @@ function updateMaxOrder(newMaxOrder)
             zeroInputY = document.createElement("input");
             zeroInputX.id = "zz-x" + index;
             zeroInputY.id = "zz-y" + index;
-            zeroInputX.oninput = "setFromZPlane()";
-            zeroInputY.oninput = "setFromZPlane()";
+            zeroInputX.oninput = ()=>{ setFromZPlane(); };
+            zeroInputY.oninput = ()=>{ setFromZPlane(); };
 
             zero.appendChild(zeroName);
             zero.appendChild(zeroInputX);
