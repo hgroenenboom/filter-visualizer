@@ -158,6 +158,7 @@ function drawFilterResponse(polePositions, zeroPositions)
     let normalization = filterNormalization(transferFunction);
 
     drawImpulseResponse(polePositions, zeroPositions, normalization);
+    drawStepResponse(polePositions, zeroPositions, normalization);
     
     ctx.beginPath();
     response.yMin = 0;
@@ -199,6 +200,57 @@ function drawFilterResponse(polePositions, zeroPositions)
         }
     }
     ctx.strokeStyle = "#FF9999";
+    ctx.stroke();
+}
+
+function drawStepResponse(poles, zeros, normalization)
+{
+    let response = document.getElementById("step");
+    response.width = width;
+    response.height = height;
+    response.xMin = 0;
+    response.xSize = 500;
+    response.yMin = -1;
+    response.ySize = 2;
+
+    var ctx = response.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
+    ctx.strokeRect(0, 0, width, height);
+
+    ctx.strokeStyle = "#eeeeee";
+    ctx.strokeRect(0, height / 2, width, height / 2);
+    ctx.strokeStyle = "#000000";
+
+    let complexPoles = [];
+    let complexZeros = [];
+    for(var i = 0; i < poles.length; i++)
+    {
+        complexPoles.push(new Complex(poles[i].valueX, poles[i].valueY));
+    }
+    for(var i = 0; i < zeros.length; i++)
+    {
+        complexZeros.push(new Complex(zeros[i].valueX, zeros[i].valueY));
+    }
+
+    let differentialEquation = fromPoleZerosToDifferentialEquation(complexPoles, complexZeros);
+    differentialEquation.normalize(normalization);
+    consoleWrite(differentialEquation.prettyText());
+
+    ctx.beginPath();
+    const initialPosition = new Position(response, 0, 0);
+    ctx.moveTo(initialPosition.x, initialPosition.y);
+    for(var i = 1; i < 500; i++)
+    {
+        const out = differentialEquation.tick((i > 10 && i < 300) ? 0.707 : 0);
+
+        const outPosition = new Position(response, i, out);
+        ctx.lineTo(outPosition.x, outPosition.y);
+        ctx.strokeRect(outPosition.x - 1, outPosition.y, 2, 0);
+    }
+    ctx.strokeStyle = "#aaaaff";
     ctx.stroke();
 }
 
