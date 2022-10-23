@@ -96,8 +96,7 @@ class Delay
         this.index = 0;
         this.data = [];
 
-        // TODO: should be max order
-        for(var i = 0; i < 8; i++)
+        for(var i = 0; i < maxOrder + 1; i++)
         {
             this.data.push(0);
         }
