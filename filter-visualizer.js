@@ -24,6 +24,7 @@ FilterNames = {
     Onepole: 4,
     LinkwitzRiley: 5,
     Allpass: 6,
+    MovingAverage: 7,
 }
 
 FilterTypes = {
@@ -697,6 +698,24 @@ function setAllpass()
     }
 
     drawFromSplane();
+}
+
+function setMovingAverage()
+{
+    filter.name = FilterNames.MovingAverage;
+    filter.order = Number(document.getElementById('movingAverageOrder').value);
+
+    for(var i = 1; i < maxOrder + 1; i++)
+    {
+        const pos = i / ( filter.order + 1 );
+        const theta = 2.0 * Math.PI * pos;
+        document.getElementById("zz-x" + i ).value = i <= filter.order ? parseFloat(Math.cos(theta)).toFixed(6) : null;
+        document.getElementById("zz-y" + i ).value = i <= filter.order ? parseFloat(Math.sin(theta)).toFixed(6) : null
+        document.getElementById("zp-x" + i ).value = null;
+        document.getElementById("zp-y" + i ).value = null;
+    }
+
+    drawFromZPlane();
 }
 
 ///////////////////////// DEBUGGING
