@@ -626,6 +626,9 @@ function setAllpass()
 {
     filter.name = FilterNames.Allpass;
     filter.order = document.getElementById('allpassOrder').value;
+    let q = document.getElementById('allpassQ').value;
+    q = Math.pow(2.0 - q, 5.0);
+    const flipped = document.getElementById('test').checked;
 
     for(var i = filter.order; i < maxOrder; i++)
     {
@@ -637,11 +640,21 @@ function setAllpass()
 
     for(var i = 1; i <= filter.order; i++)
     {
-        const theta = ( (2.0 * i - 1.0) * Math.PI ) / ( 2.0 * filter.order );
-        document.getElementById("sz-x" + i ).value = parseFloat(Math.sin(theta)).toFixed(6);
-        document.getElementById("sp-x" + i ).value = parseFloat(- Math.sin(theta)).toFixed(6);
-        document.getElementById("sz-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
-        document.getElementById("sp-y" + i ).value = parseFloat(Math.cos(theta)).toFixed(6);
+        let index = -0.5 + ( 2.0 * i - 1.0 ) / ( 2.0 * filter.order );
+        if(index != 0.0)
+        {
+            const sign = Math.sign(index);
+            index = sign * 0.5 * Math.pow(Math.abs(2.0 * index), q);
+        }
+
+        const theta = Math.PI * (0.5 + index);
+
+        const x = Math.sin(theta);
+        const y = Math.cos(theta);
+        document.getElementById("sz-x" + i ).value = parseFloat(flipped ? -x : x).toFixed(6);
+        document.getElementById("sz-y" + i ).value = parseFloat(y).toFixed(6);
+        document.getElementById("sp-x" + i ).value = parseFloat(flipped ? x : -x).toFixed(6);
+        document.getElementById("sp-y" + i ).value = parseFloat(y).toFixed(6);
     }
 
     drawFromSplane();
